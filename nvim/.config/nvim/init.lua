@@ -169,6 +169,56 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      on_attach = function(bufnr)
+        local gitsigns = require 'gitsigns'
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+          else
+            gitsigns.nav_hunk 'next'
+          end
+        end, { desc = 'Jump to next git [c]hange' })
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+          else
+            gitsigns.nav_hunk 'prev'
+          end
+        end, { desc = 'Jump to previous git [c]hange' })
+
+        -- Actions
+        -- visual mode
+        map('v', '<leader>hs', function()
+          gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'stage git hunk' })
+        map('v', '<leader>hr', function()
+          gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'reset git hunk' })
+        -- normal mode
+        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })
+        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'git [r]eset hunk' })
+        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'git [S]tage buffer' })
+        map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = 'git [u]ndo stage hunk' })
+        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
+        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
+        map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
+        map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
+        map('n', '<leader>hD', function()
+          gitsigns.diffthis '@'
+        end, { desc = 'git [D]iff against last commit' })
+        -- Toggles
+        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
+        map('n', '<leader>tD', gitsigns.toggle_deleted, { desc = '[T]oggle git show [D]eleted' })
+      end,
     },
   },
 
@@ -224,19 +274,31 @@ require('lazy').setup({
       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
   },
-
+  -- git UI
   {
     'NeogitOrg/neogit',
     dependencies = {
       'nvim-lua/plenary.nvim', -- required
       'sindrets/diffview.nvim', -- optional - Diff integration
-
-      -- Only one of these is needed, not both.
       'nvim-telescope/telescope.nvim', -- optional
     },
     config = true,
   },
-
+  -- github integration
+  {
+    {
+      'pwntester/octo.nvim',
+      dependencies = {
+        'nvim-lua/plenary.nvim',
+        'nvim-telescope/telescope.nvim',
+        'nvim-tree/nvim-web-devicons',
+      },
+      config = function()
+        require('octo').setup()
+      end,
+      cmd = { 'Octo' },
+    },
+  },
   -- telescope file browser
   {
     'nvim-telescope/telescope-file-browser.nvim',
@@ -322,10 +384,10 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>a', builtin.find_files, { desc = '[A]Search Files' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>i', builtin.live_grep, { desc = '[I]Search by Grep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -814,23 +876,98 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  -- file tree
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    version = '*',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+    },
+    cmd = 'Neotree',
+    keys = {
+      { '\\', ':Neotree reveal<CR>', { desc = 'NeoTree reveal' } },
+    },
+    opts = {
+      filesystem = {
+        window = {
+          mappings = {
+            ['\\'] = 'close_window',
+          },
+        },
+      },
+    },
+  },
+  {
 
-  -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
+    { -- Linting
+      'mfussenegger/nvim-lint',
+      event = { 'BufReadPre', 'BufNewFile' },
+      config = function()
+        local lint = require 'lint'
+        lint.linters_by_ft = {
+          markdown = { 'markdownlint' },
+          python = { 'flake8' },
+        }
 
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
-  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-  -- require 'kickstart.plugins.octo',
+        -- To allow other plugins to add linters to require('lint').linters_by_ft,
+        -- instead set linters_by_ft like this:
+        -- lint.linters_by_ft = lint.linters_by_ft or {}
+        -- lint.linters_by_ft['markdown'] = { 'markdownlint' }
+        --
+        -- However, note that this will enable a set of default linters,
+        -- which will cause errors unless these tools are available:
+        -- {
+        --   clojure = { "clj-kondo" },
+        --   dockerfile = { "hadolint" },
+        --   inko = { "inko" },
+        --   janet = { "janet" },
+        --   json = { "jsonlint" },
+        --   markdown = { "vale" },
+        --   rst = { "vale" },
+        --   ruby = { "ruby" },
+        --   terraform = { "tflint" },
+        --   text = { "vale" }
+        -- }
+        --
+        -- You can disable the default linters by setting their filetypes to nil:
+        -- lint.linters_by_ft['clojure'] = nil
+        -- lint.linters_by_ft['dockerfile'] = nil
+        -- lint.linters_by_ft['inko'] = nil
+        -- lint.linters_by_ft['janet'] = nil
+        -- lint.linters_by_ft['json'] = nil
+        -- lint.linters_by_ft['markdown'] = nil
+        -- lint.linters_by_ft['rst'] = nil
+        -- lint.linters_by_ft['ruby'] = nil
+        -- lint.linters_by_ft['terraform'] = nil
+        -- lint.linters_by_ft['text'] = nil
+
+        -- Create autocommand which carries out the actual linting
+        -- on the specified events.
+        local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
+        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
+          group = lint_augroup,
+          callback = function()
+            require('lint').try_lint()
+          end,
+        })
+      end,
+    },
+  },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    -- Optional dependency
+    dependencies = { 'hrsh7th/nvim-cmp' },
+    config = function()
+      require('nvim-autopairs').setup {}
+      -- If you want to automatically add `(` after selecting a function or method
+      local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
+      local cmp = require 'cmp'
+      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+    end,
+  },
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
