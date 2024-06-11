@@ -858,6 +858,12 @@ require('lazy').setup({
       end
 
       require('mini.operators').setup()
+      require('mini.bufremove').setup()
+      require('mini.align').setup()
+
+      vim.keymap.set('n', '<leader>ww', function()
+        MiniBufremove.delete()
+      end, { desc = '[W]orkspace delete buffer' })
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
