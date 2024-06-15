@@ -267,7 +267,7 @@ require('lazy').setup({
     opts = {},
     -- stylua: ignore
     keys = {
-      { "<leader>u", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
       { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
       { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
@@ -386,7 +386,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>a', builtin.find_files, { desc = '[A]Search Files' })
-      vim.keymap.set('n', '<leader>sa', builtin.find_files, { desc = '[A]Search Files' })
+      vim.keymap.set('n', '<leader>sa', function()
+        builtin.find_files { search_file = '*.c' }
+      end, { desc = '[A]Search Files' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>i', builtin.live_grep, { desc = '[I]Search by Grep' })
@@ -517,9 +519,17 @@ require('lazy').setup({
           --
           map('<leader>df', require('telescope.builtin').lsp_document_symbols, '[D]ocument [F]unctions', { symbols = 'function' })
 
+          --  diagnostics
+          --
+          map('<leader>dd', require('telescope.builtin').diagnostics, '[D]ocument [D]iagnostics', { bufnr = 0 })
+
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
           map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+          --  diagnostics
+          --
+          map('<leader>wd', require('telescope.builtin').diagnostics, '[W]orkspace [D]iagnostics')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
@@ -826,6 +836,9 @@ require('lazy').setup({
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
+    keys = {
+      { 'gz', '', desc = '+surround' },
+    },
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -840,7 +853,17 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      require('mini.surround').setup {
+        mappings = {
+          add = 'gza', -- Add surrounding in Normal and Visual modes
+          delete = 'gzd', -- Delete surrounding
+          find = 'gzf', -- Find surrounding (to the right)
+          find_left = 'gzF', -- Find surrounding (to the left)
+          highlight = 'gzh', -- Highlight surrounding
+          replace = 'gzr', -- Replace surrounding
+          update_n_lines = 'gzn', -- Update `n_lines`
+        },
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -860,6 +883,7 @@ require('lazy').setup({
       require('mini.operators').setup()
       require('mini.bufremove').setup()
       require('mini.align').setup()
+      require('mini.indentscope').setup()
 
       vim.keymap.set('n', '<leader>ww', function()
         MiniBufremove.delete()
