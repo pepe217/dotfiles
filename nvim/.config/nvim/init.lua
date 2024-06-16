@@ -336,28 +336,20 @@ require('lazy').setup({
         desc = '[N]eogit',
       },
       {
-        '<leader>ns',
+        '<leader>na',
         mode = { 'n' },
         function()
-          require('fzf-lua').git_status()
+          require('neogit').open { 'stash' }
         end,
-        desc = '[S]tatus',
+        desc = 'St[a]sh UI',
       },
       {
         '<leader>nc',
         mode = { 'n' },
         function()
-          require('neogit').action('commit', 'commit')
+          require('neogit').open { 'commit' }
         end,
         desc = '[C]ommit',
-      },
-      {
-        '<leader>na',
-        mode = { 'n' },
-        function()
-          require('neogit').action('commit', 'ammend')
-        end,
-        desc = '[C]ommit Ammend',
       },
     },
   },
@@ -369,8 +361,26 @@ require('lazy').setup({
     config = function()
       -- calling `setup` is optional for customization
       require('fzf-lua').setup {}
-      vim.keymap.set('n', '<leader><leader>', require('fzf-lua').buffers)
-      vim.keymap.set('n', '<leader>a', require('fzf-lua').files)
+      local fzf = require 'fzf-lua'
+      vim.keymap.set('n', '<leader>sh', fzf.helptags, { desc = '[S]earch [H]elp' })
+      vim.keymap.set('n', '<leader>sk', fzf.keymaps, { desc = '[S]earch [K]eymaps' })
+      vim.keymap.set('n', '<leader>ns', fzf.git_status, { desc = 'fzf git [S]tatus' })
+      vim.keymap.set('n', '<leader>nt', fzf.git_status, { desc = 'fzf [S]tashes' })
+      vim.keymap.set('n', '<leader><leader>', fzf.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>fs', function()
+        fzf.files { cwd = vim.fn.expand '%:p:h' }
+      end, { desc = 'Fuzzy [S]earch for files in buf dir' })
+      vim.keymap.set('n', '<leader>sn', function()
+        fzf.files { cwd = vim.fn.stdpath 'config' }
+      end, { desc = 'Fuzzy [S]earch for files in cfg dir' })
+      vim.keymap.set('n', '<leader>sa', fzf.files, { desc = '[A]Search Files' })
+      vim.keymap.set('n', '<leader>ss', fzf.builtin, { desc = '[S]earch [S]elect fzf pickers' })
+      vim.keymap.set('n', '<leader>sw', fzf.grep_cWORD, { desc = '[S]earch current [W]ORD' })
+      vim.keymap.set('n', '<leader>i', fzf.live_grep_glob, { desc = '[I]Search by Grep' })
+      vim.keymap.set('n', '<leader>sd', fzf.diagnostics_document, { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>sr', fzf.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>s.', fzf.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>/', fzf.lgrep_curbuf, { desc = '[/] Fuzzily search in current buffer' })
     end,
   },
   -- telescope file browser
@@ -457,18 +467,16 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+      -- vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+      -- vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       -- vim.keymap.set('n', '<leader>a', builtin.find_files, { desc = '[A]Search Files' })
-      vim.keymap.set('n', '<leader>sa', function()
-        builtin.find_files { search_file = '*.c' }
-      end, { desc = '[A]Search Files' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>i', builtin.live_grep, { desc = '[I]Search by Grep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      -- vim.keymap.set('n', '<leader>sa', builtin.find_files, { desc = '[A]Search Files' })
+      -- vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+      -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      -- vim.keymap.set('n', '<leader>i', builtin.live_grep, { desc = '[I]Search by Grep' })
+      -- vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      -- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       -- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- open file_browser with the path of the current buffer
@@ -493,9 +501,9 @@ require('lazy').setup({
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
+      -- vim.keymap.set('n', '<leader>sn', function()
+      --   builtin.find_files { cwd = vim.fn.stdpath 'config' }
+      -- end, { desc = '[S]earch [N]eovim files' })
     end,
   },
 
@@ -580,6 +588,22 @@ require('lazy').setup({
           --  Symbols are things like variables, functions, types, etc.
           --
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>dx', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>dv', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
+            regex_filter = function(e, _)
+              return 'Variable' == vim.print(e.kind)
+            end,
+          })
+          map('<leader>dz', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
+            regex_filter = function(e, _)
+              return 'Constant' == vim.print(e.kind)
+            end,
+          })
+          map('<leader>dy', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
+            regex_filter = function(e, _)
+              return 'Function' == vim.print(e.kind)
+            end,
+          })
 
           -- constants only
           --
