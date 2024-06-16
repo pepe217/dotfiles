@@ -252,6 +252,8 @@ require('lazy').setup({
         ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
         ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
         ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
+        ['<leader>n'] = { name = '[N]eogit', _ = 'which_key_ignore' },
+        ['<leader>f'] = { name = '[F]ile', _ = 'which_key_ignore' },
       }
       -- visual mode
       require('which-key').register({
@@ -277,12 +279,87 @@ require('lazy').setup({
   -- git UI
   {
     'NeogitOrg/neogit',
+    lazy = false,
     dependencies = {
       'nvim-lua/plenary.nvim', -- required
       'sindrets/diffview.nvim', -- optional - Diff integration
       'nvim-telescope/telescope.nvim', -- optional
     },
     config = true,
+    keys = {
+      {
+        '<leader>nr',
+        mode = { 'n' },
+        function()
+          require('neogit').open { 'rebase' }
+        end,
+        desc = '[R]ebase',
+      },
+      {
+        '<leader>nm',
+        mode = { 'n' },
+        function()
+          require('neogit').open { 'merge' }
+        end,
+        desc = '[M]erge',
+      },
+      {
+        '<leader>nl',
+        mode = { 'n' },
+        function()
+          require('neogit').open { 'pull' }
+        end,
+        desc = 'Pu[l]l',
+      },
+      {
+        '<leader>np',
+        mode = { 'n' },
+        function()
+          require('neogit').open { 'push' }
+        end,
+        desc = '[P]ush',
+      },
+      {
+        '<leader>nb',
+        mode = { 'n' },
+        function()
+          require('neogit').open { 'branch' }
+        end,
+        desc = '[B]ranch',
+      },
+      {
+        '<leader>nn',
+        mode = { 'n' },
+        function()
+          require('neogit').open {}
+        end,
+        desc = '[N]eogit',
+      },
+      {
+        '<leader>ns',
+        mode = { 'n' },
+        function()
+          require('fzf-lua').git_status()
+        end,
+        desc = '[S]tatus',
+      },
+      {
+        '<leader>nc',
+        mode = { 'n' },
+        function()
+          require('neogit').action('commit', 'commit')
+        end,
+        desc = '[C]ommit',
+      },
+      {
+        '<leader>na',
+        mode = { 'n' },
+        function()
+          require('neogit').action('commit', 'ammend')
+        end,
+        desc = '[C]ommit Ammend',
+      },
+    },
   },
   -- fzf-lua picker
   {
@@ -395,7 +472,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- open file_browser with the path of the current buffer
-      vim.keymap.set('n', '<space>fb', ':Telescope file_browser path=%:p:h select_buffer=true<CR>')
+      -- vim.keymap.set('n', '<space>fb', ':Telescope file_browser path=%:p:h select_buffer=true<CR>')
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -667,7 +744,7 @@ require('lazy').setup({
     lazy = false,
     keys = {
       {
-        '<leader>f',
+        '<leader>ff',
         function()
           require('conform').format { async = true, lsp_fallback = true }
         end,
@@ -841,7 +918,7 @@ require('lazy').setup({
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
-
+      require('mini.files').setup()
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
@@ -882,6 +959,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>ww', function()
         MiniBufremove.delete()
       end, { desc = '[W]orkspace delete buffer' })
+      vim.keymap.set('n', '<leader>fb', function()
+        MiniFiles.open()
+      end, { desc = 'File [B]rowser' })
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
