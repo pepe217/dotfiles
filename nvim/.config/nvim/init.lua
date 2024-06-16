@@ -284,20 +284,17 @@ require('lazy').setup({
     },
     config = true,
   },
-  -- github integration
+  -- fzf-lua picker
   {
-    {
-      'pwntester/octo.nvim',
-      dependencies = {
-        'nvim-lua/plenary.nvim',
-        'nvim-telescope/telescope.nvim',
-        'nvim-tree/nvim-web-devicons',
-      },
-      config = function()
-        require('octo').setup()
-      end,
-      cmd = { 'Octo' },
-    },
+    'ibhagwan/fzf-lua',
+    -- optional for icon support
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      -- calling `setup` is optional for customization
+      require('fzf-lua').setup {}
+      vim.keymap.set('n', '<leader><leader>', require('fzf-lua').buffers)
+      vim.keymap.set('n', '<leader>a', require('fzf-lua').files)
+    end,
   },
   -- telescope file browser
   {
@@ -410,7 +407,7 @@ require('lazy').setup({
       end, { desc = '[/] Fuzzily search in current buffer' })
 
       -- It's also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
+      --  See `:help telescope.builtin.live_grep():help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
@@ -836,9 +833,6 @@ require('lazy').setup({
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
-    keys = {
-      { 'gz', '', desc = '+surround' },
-    },
     config = function()
       -- Better Around/Inside textobjects
       --
