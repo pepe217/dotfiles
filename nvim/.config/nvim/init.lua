@@ -283,9 +283,11 @@ require('lazy').setup({
     dependencies = {
       'nvim-lua/plenary.nvim', -- required
       'sindrets/diffview.nvim', -- optional - Diff integration
-      'nvim-telescope/telescope.nvim', -- optional
+      'ibhagwan/fzf-lua', -- optional
     },
-    config = true,
+    config = function()
+      require('neogit').setup { integrations = { fzf_lua = true } }
+    end,
     keys = {
       {
         '<leader>nr',
@@ -591,17 +593,17 @@ require('lazy').setup({
           map('<leader>dx', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols')
           map('<leader>dv', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
             regex_filter = function(e, _)
-              return 'Variable' == vim.print(e.kind)
+              return 'Variable' == e.kind
             end,
           })
           map('<leader>dz', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
             regex_filter = function(e, _)
-              return 'Constant' == vim.print(e.kind)
+              return 'Constant' == e.kind
             end,
           })
           map('<leader>dy', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
             regex_filter = function(e, _)
-              return 'Function' == vim.print(e.kind)
+              return 'Function' == e.kind
             end,
           })
 
