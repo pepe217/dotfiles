@@ -362,54 +362,32 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       -- calling `setup` is optional for customization
-      require('fzf-lua').setup {
-        files = { formatter = 'path.filename_first' },
-        live_grep = { formatter = 'path.filename_first' },
-        grep = { formatter = 'path.filename_first' },
-      }
+      require('fzf-lua').setup {}
       local fzf = require 'fzf-lua'
-      vim.keymap.set('n', '<leader>sh', function()
-        fzf.helptags { formatter = 'path.filename_first' }
-      end, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', function()
-        fzf.keymaps { formatter = 'path.filename_first' }
-      end, { desc = '[S]earch [K]eymaps' })
+      vim.keymap.set('n', '<leader>sh', fzf.helptags, { desc = '[S]earch [H]elp' })
+      vim.keymap.set('n', '<leader>sk', fzf.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>nh', fzf.git_branches, { desc = 'fzf git Branc[h]es' })
-      vim.keymap.set('n', '<leader>ns', function()
-        fzf.git_status { formatter = 'path.filename_first' }
-      end, { desc = 'fzf git [S]tatus' })
+      vim.keymap.set('n', '<leader>ns', fzf.git_status, { desc = 'fzf git [S]tatus' })
       vim.keymap.set('n', '<leader>nt', fzf.git_stash, { desc = 'fzf [S]tashes' })
       vim.keymap.set('n', '<leader><leader>', fzf.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>fs', function()
-        fzf.files { cwd = vim.fn.expand '%:p:h' }
-      end, { desc = 'Fuzzy [S]earch for files in buf dir' })
-      vim.keymap.set('n', '<leader>sn', function()
-        fzf.files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = 'Fuzzy [S]earch for files in cfg dir' })
+      vim.keymap.set('n', '<leader>fs', fzf.files, { desc = 'Fuzzy [S]earch for files in buf dir' })
+      vim.keymap.set('n', '<leader>sn', fzf.files, { desc = 'Fuzzy [S]earch for files in cfg dir' })
       vim.keymap.set('n', '<leader>sp', function()
-        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e py]], formatter = 'path.filename_first' }
+        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e py]] }
       end, { desc = 'Search [P]ython files' })
-      vim.keymap.set('n', '<leader>sa', function()
-        fzf.files { formatter = 'path.filename_first' }
-      end, { desc = 'Search [A]ll Files' })
+      vim.keymap.set('n', '<leader>sa', fzf.files, { desc = 'Search [A]ll Files' })
       vim.keymap.set('n', '<leader>sh', function()
-        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git nvim/.config/nvim/]], formatter = 'path.filename_first' }
+        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git nvim/.config/nvim/]] }
       end, { desc = 'Search Files' })
       vim.keymap.set('n', '<leader>a', function()
-        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e py -e proto]], formatter = 'path.filename_first' }
+        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e py -e proto]] }
       end, { desc = '[A]Search Files' })
       vim.keymap.set('n', '<leader>ss', fzf.builtin, { desc = '[S]earch [S]elect zf pickers' })
-      vim.keymap.set('n', '<leader>sw', function()
-        fzf.grep_cWORD { formatter = 'path.filename_first' }
-      end, { desc = '[S]earch current [W]ORD' })
-      vim.keymap.set('n', '<leader>i', function()
-        fzf.live_grep_glob { formatter = 'path.filename_first' }
-      end, { desc = '[I]Search by Grep' })
+      vim.keymap.set('n', '<leader>sw', fzf.grep_cWORD, { desc = '[S]earch current [W]ORD' })
+      vim.keymap.set('n', '<leader>i', fzf.live_grep_glob, { desc = '[I]Search by Grep' })
       vim.keymap.set('n', '<leader>sd', fzf.diagnostics_document, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', fzf.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', function()
-        fzf.oldfiles { formatter = 'path.filename_first' }
-      end, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>s.', fzf.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>/', fzf.lgrep_curbuf, { desc = '[/] Fuzzily search in current buffer' })
     end,
   },
