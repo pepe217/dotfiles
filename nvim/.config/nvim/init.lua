@@ -375,9 +375,11 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sp', function()
         fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e py]] }
       end, { desc = 'Search [P]ython files' })
-      vim.keymap.set('n', '<leader>sa', fzf.files, { desc = 'Search [A]ll Files' })
+      vim.keymap.set('n', '<leader>sa', function()
+        fzf.files { previewer = false }
+      end, { desc = 'Search [A]ll Files' })
       vim.keymap.set('n', '<leader>sh', function()
-        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git nvim/.config/nvim/]] }
+        fzf.files { cwd = '~/nvim/.config/nvim/' }
       end, { desc = 'Search Files' })
       vim.keymap.set('n', '<leader>a', function()
         fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e py -e proto]] }
@@ -477,7 +479,9 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       -- vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       -- vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      -- vim.keymap.set('n', '<leader>a', builtin.find_files, { desc = '[A]Search Files' })
+      vim.keymap.set('n', '<leader>sz', function()
+        builtin.find_files { search_files = '*.c' }
+      end, { desc = '[A]Search Files' })
       -- vim.keymap.set('n', '<leader>sa', builtin.find_files, { desc = '[A]Search Files' })
       -- vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
@@ -608,11 +612,7 @@ require('lazy').setup({
               return 'Constant' == e.kind
             end,
           })
-          map('<leader>dy', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
-            regex_filter = function(e, _)
-              return 'Function' == e.kind
-            end,
-          })
+          map('<leader>dy', require('fzf-lua').diagnostics_document, '[D]ocument [S]ymbols', { severity_bound = 3 })
 
           -- constants only
           --
@@ -952,6 +952,7 @@ require('lazy').setup({
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
       require('mini.files').setup()
+      require('mini.tabline').setup { set_vim_settings = false }
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
