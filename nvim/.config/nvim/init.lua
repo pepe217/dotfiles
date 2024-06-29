@@ -392,7 +392,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sd', fzf.diagnostics_document, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', fzf.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', fzf.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader>/', fzf.lgrep_curbuf, { desc = '[/] Fuzzily search in current buffer' })
+      vim.keymap.set('n', '<leader>/', fzf.grep_curbuf, { desc = '[/] Fuzzily search in current buffer' })
+      vim.keymap.set('n', '<leader>?', fzf.lgrep_curbuf, { desc = '[?] Grep search in current buffer' })
     end,
   },
   -- telescope file browser
@@ -490,7 +491,10 @@ require('lazy').setup({
       -- vim.keymap.set('n', '<leader>i', builtin.live_grep, { desc = '[I]Search by Grep' })
       -- vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      -- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      -- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files (".' for repeat)' })
+      vim.keymap.set('n', '<leader>pz', function()
+        builtin.find_files { find_command = { 'fd', '--type f', '--follow', '--hidden' } }
+      end, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>pb', function()
         builtin.find_files { search_file = '*.c', search_dirs = { '~/qmk_firmware/keyboards/' } }
       end, { desc = '[ ] Find existing buffers' })
@@ -509,12 +513,12 @@ require('lazy').setup({
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep():help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-        }
-      end, { desc = '[S]earch [/] in Open Files' })
+      -- vim.keymap.set('n', '<leader>s/', function()
+      --   builtin.live_grep {
+      --     grep_open_files = true,
+      --     prompt_title = 'Live Grep in Open Files',
+      --   }
+      -- end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
       -- vim.keymap.set('n', '<leader>sn', function()
@@ -927,6 +931,7 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'buffer' },
         },
       }
     end,
