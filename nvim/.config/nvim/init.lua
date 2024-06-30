@@ -256,6 +256,7 @@ require('lazy').setup({
         ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
         ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
         ['<leader>n'] = { name = '[N]eogit', _ = 'which_key_ignore' },
+        ['<leader>g'] = { name = '[G]itsign	', _ = 'which_key_ignore' },
         ['<leader>f'] = { name = '[F]ile', _ = 'which_key_ignore' },
       }
       -- visual mode
@@ -972,6 +973,7 @@ require('lazy').setup({
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
       require('mini.files').setup()
+      require('mini.bracketed').setup()
       require('mini.tabline').setup { set_vim_settings = false }
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
