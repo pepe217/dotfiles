@@ -109,13 +109,17 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', '<leader>k', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- github convenience links
-vim.keymap.set('n', '<leader>gw', function()
+local github_url = function()
   local rel_path = vim.fn.expand '%:.'
   local repo_path = 'https://github.com/pepe217/dotfiles/blob/'
   local branch = vim.fn.systemlist('git symbolic-ref --short HEAD')[1]
   local line = vim.fn.line '.'
   vim.fn.setreg('+', repo_path .. branch .. '/' .. rel_path .. '#L' .. line)
-end, { desc = 'Copy github link to clipboard' })
+end
+vim.keymap.set('n', '<leader>gw', github_url, { desc = 'Copy github link to clipboard' })
+vim.keymap.set('n', '<leader>go', function()
+  vim.fn.jobstart({ 'xdg_open', github_url() }, { detach = true })
+end, { desc = 'Open github link in browser' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
