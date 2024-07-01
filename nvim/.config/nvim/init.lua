@@ -392,7 +392,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>fs', fzf.files, { desc = 'Fuzzy [S]earch for files in buf dir' })
       vim.keymap.set('n', '<leader>sn', fzf.files, { desc = 'Fuzzy [S]earch for files in cfg dir' })
       vim.keymap.set('n', '<leader>sp', function()
-        fzf.files { fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e py]] }
+        fzf.files { formatter = { 'path.filename_first', 2 }, fd_opts = [[--color=never --type f --hidden --follow --exclude .git -e c]] }
       end, { desc = 'Search [P]ython files' })
       vim.keymap.set('n', '<leader>sa', function()
         fzf.files { previewer = false }
@@ -510,7 +510,7 @@ require('lazy').setup({
       -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       -- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files (".' for repeat)' })
       vim.keymap.set('n', '<leader>pz', function()
-        builtin.find_files { find_command = { 'fd', '--type f', '--follow', '--hidden' } }
+        builtin.find_files { find_command = { 'rg', '--files', '--ignore', '--hidden', '-g', '*.c' } }
       end, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>pb', function()
         builtin.find_files { search_file = '*.c', search_dirs = { '~/qmk_firmware/keyboards/' } }
