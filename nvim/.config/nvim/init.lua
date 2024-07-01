@@ -108,6 +108,14 @@ vim.keymap.set('n', '<leader>j', '<C-w><C-j>', { desc = 'Move focus to the lower
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 vim.keymap.set('n', '<leader>k', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- github convenience links
+vim.keymap.set('n', '<leader>gw', function()
+  local rel_path = vim.fn.expand '%:.'
+  local repo_path = 'https://github.com/pepe217/dotfiles/blob/master/'
+  local line = vim.fn.line '.'
+  vim.fn.setreg('+', repo_path .. rel_path .. '#L' .. line)
+end, { desc = 'Copy github link to clipboard' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -726,7 +734,13 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        pyright = {},
+        pyright = {
+          settings = {
+            python = {
+              analysis = { diagnosticMode = 'openFilesOnly' },
+            },
+          },
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
