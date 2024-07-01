@@ -111,9 +111,10 @@ vim.keymap.set('n', '<leader>k', '<C-w><C-k>', { desc = 'Move focus to the upper
 -- github convenience links
 vim.keymap.set('n', '<leader>gw', function()
   local rel_path = vim.fn.expand '%:.'
-  local repo_path = 'https://github.com/pepe217/dotfiles/blob/master/'
+  local repo_path = 'https://github.com/pepe217/dotfiles/blob/'
+  local branch = vim.fn.systemlist('git symbolic-ref --short HEAD')[1]
   local line = vim.fn.line '.'
-  vim.fn.setreg('+', repo_path .. rel_path .. '#L' .. line)
+  vim.fn.setreg('+', repo_path .. branch .. '/' .. rel_path .. '#L' .. line)
 end, { desc = 'Copy github link to clipboard' })
 
 -- [[ Basic Autocommands ]]
