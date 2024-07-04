@@ -897,6 +897,14 @@ require('lazy').setup({
             luasnip.lsp_expand(args.body)
           end,
         },
+        formatting = {
+          expandable_indicator = true,
+          fields = { 'abbr', 'kind', 'menu' },
+          format = function(entry, vim_item)
+            vim_item.kind = vim_item.kind .. ' ' .. entry.source.name
+            return vim_item
+          end,
+        },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- For an understanding of why these mappings were
@@ -1046,7 +1054,15 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
-      require('mini.operators').setup()
+      require('mini.operators').setup {
+        -- Replace text with register
+        replace = {
+          prefix = 'gR',
+
+          -- Whether to reindent new text to match previous indent
+          reindent_linewise = true,
+        },
+      }
       require('mini.bufremove').setup()
 
       vim.keymap.set('n', '<leader>ww', function()
