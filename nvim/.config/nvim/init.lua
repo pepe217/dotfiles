@@ -135,6 +135,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- copy paste system clipboard
+vim.keymap.set('n', '<leader>y', '"+y', { desc = 'yank to sys clipboard' })
+vim.keymap.set('n', '<leader>p', '"+p', { desc = 'paste from sys clipboard' })
+
+-- dont add single deletes to register
+vim.keymap.set('n', 'x', '"_x')
+vim.keymap.set('n', 'X', '"_X')
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -509,12 +517,6 @@ require('lazy').setup({
       -- vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       -- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files (".' for repeat)' })
-      vim.keymap.set('n', '<leader>pz', function()
-        builtin.find_files { find_command = { 'rg', '--files', '--ignore', '--hidden', '-g', '*.c' } }
-      end, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>pb', function()
-        builtin.find_files { search_file = '*.c', search_dirs = { '~/qmk_firmware/keyboards/' } }
-      end, { desc = '[ ] Find existing buffers' })
 
       -- open file_browser with the path of the current buffer
       -- vim.keymap.set('n', '<space>fb', ':Telescope file_browser path=%:p:h select_buffer=true<CR>')
