@@ -1029,13 +1029,13 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup {
         mappings = {
-          add = 'gza', -- Add surrounding in Normal and Visual modes
-          delete = 'gzd', -- Delete surrounding
-          find = 'gzf', -- Find surrounding (to the right)
-          find_left = 'gzF', -- Find surrounding (to the left)
-          highlight = 'gzh', -- Highlight surrounding
-          replace = 'gzr', -- Replace surrounding
-          update_n_lines = 'gzn', -- Update `n_lines`
+          add = 'gsa', -- Add surrounding in Normal and Visual modes
+          delete = 'gsd', -- Delete surrounding
+          find = 'gsf', -- Find surrounding (to the right)
+          find_left = 'gsF', -- Find surrounding (to the left)
+          highlight = 'gsh', -- Highlight surrounding
+          replace = 'gsr', -- Replace surrounding
+          update_n_lines = 'gsn', -- Update `n_lines`
         },
       }
 
@@ -1061,6 +1061,10 @@ require('lazy').setup({
 
           -- Whether to reindent new text to match previous indent
           reindent_linewise = true,
+        },
+        sort = {
+          prefix = 'gz',
+          func = nil,
         },
       }
       require('mini.bufremove').setup()
