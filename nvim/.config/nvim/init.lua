@@ -893,7 +893,7 @@ require('lazy').setup({
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
-      require('luasnip.loaders.from_vscode').lazy_load { paths = vim.fn.stdpath 'config' .. '/snippets' }
+      require('luasnip.loaders.from_vscode').lazy_load { paths = './snippets' }
 
       cmp.setup {
         snippet = {
@@ -1160,6 +1160,7 @@ require('lazy').setup({
         lint.linters_by_ft = {
           markdown = { 'markdownlint' },
           python = { 'flake8' },
+          json = { 'jsonlint' },
         }
 
         -- To allow other plugins to add linters to require('lint').linters_by_ft,
@@ -1174,7 +1175,7 @@ require('lazy').setup({
         --   dockerfile = { "hadolint" },
         --   inko = { "inko" },
         --   janet = { "janet" },
-        --   json = { "jsonlint" },
+        -- json = { "jsonlint" },
         --   markdown = { "vale" },
         --   rst = { "vale" },
         --   ruby = { "ruby" },
