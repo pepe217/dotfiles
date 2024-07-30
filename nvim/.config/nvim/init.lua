@@ -380,6 +380,30 @@ require('lazy').setup({
         end,
         desc = '[C]ommit',
       },
+      {
+        '<leader>nd',
+        mode = { 'n' },
+        function()
+          vim.cmd 'DiffviewOpen'
+        end,
+        desc = 'Open [d]iffview',
+      },
+      {
+        '<leader>ni',
+        mode = { 'n' },
+        function()
+          vim.cmd 'DiffviewFileHistory %'
+        end,
+        desc = '[x]Diffview file history',
+      },
+      {
+        '<leader>nx',
+        mode = { 'n' },
+        function()
+          vim.cmd 'DiffviewClose'
+        end,
+        desc = '[x]Close diffview',
+      },
     },
   },
   -- fzf-lua picker
@@ -964,8 +988,8 @@ require('lazy').setup({
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
-          { name = 'nvim_lsp' },
           { name = 'luasnip' },
+          { name = 'nvim_lsp' },
           { name = 'nvim_lsp_signature_help' },
           { name = 'path' },
           -- Require at least the first character be typed before showing completion.
