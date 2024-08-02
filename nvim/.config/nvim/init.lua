@@ -413,7 +413,17 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       -- calling `setup` is optional for customization
-      require('fzf-lua').setup {}
+      local actions = require 'fzf-lua.actions'
+      require('fzf-lua').setup {
+        grep = {
+          actions = {
+            ['ctrl-q'] = {
+              fn = actions.file_edit_or_qf,
+              prefix = 'select-all+',
+            },
+          },
+        },
+      }
       local fzf = require 'fzf-lua'
       vim.keymap.set('n', '<leader>sh', fzf.helptags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', fzf.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -1005,7 +1015,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-storm'
+      vim.cmd.colorscheme 'tokyonight-night'
       -- vim.cmd.colorscheme 'sonokai'
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
