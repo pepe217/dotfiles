@@ -138,12 +138,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- copy paste system clipboard
-vim.keymap.set('n', '<leader>y', '"+y', { desc = 'yank to sys clipboard' })
-vim.keymap.set('n', '<leader>p', '"+p', { desc = 'paste from sys clipboard' })
-
--- dont add single deletes to register
-vim.keymap.set('n', 'x', '"_x')
-vim.keymap.set('n', 'X', '"_X')
+vim.keymap.set('n', '<leader>u', function()
+  vim.cmd 'w'
+end, { desc = 'save' })
+vim.keymap.set('n', '<leader>t', function()
+  vim.cmd 'x'
+end, { desc = 'exit' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -271,21 +271,30 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>n'] = { name = '[N]eogit', _ = 'which_key_ignore' },
-        ['<leader>g'] = { name = '[G]itsign	', _ = 'which_key_ignore' },
-        ['<leader>f'] = { name = '[F]ile', _ = 'which_key_ignore' },
+      require('which-key').add {
+        { '<leader>c', group = '[C]ode' },
+        { '<leader>c_', hidden = true },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>d_', hidden = true },
+        { '<leader>f', group = '[F]ile' },
+        { '<leader>f_', hidden = true },
+        { '<leader>g', group = '[G]itsign\t' },
+        { '<leader>g_', hidden = true },
+        { '<leader>n', group = '[N]eogit' },
+        { '<leader>n_', hidden = true },
+        { '<leader>r', group = '[R]ename' },
+        { '<leader>r_', hidden = true },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>s_', hidden = true },
+        { '<leader>t', group = '[T]oggle' },
+        { '<leader>t_', hidden = true },
+        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>w_', hidden = true },
       }
       -- visual mode
-      require('which-key').register({
-        ['<leader>g'] = { 'Git [H]unk' },
-      }, { mode = 'v' })
+      require('which-key').add {
+        { '<leader>g', desc = 'Git [H]unk', mode = 'v' },
+      }
     end,
   },
 
