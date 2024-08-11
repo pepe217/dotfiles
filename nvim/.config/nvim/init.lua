@@ -137,9 +137,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- copy paste system clipboard
+-- easier save and close
 vim.keymap.set('n', '<leader>u', ':w<CR>', { desc = 'save' })
-vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'save' })
+vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'exit' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
