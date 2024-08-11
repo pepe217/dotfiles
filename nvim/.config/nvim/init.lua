@@ -274,10 +274,8 @@ require('lazy').setup({
         { '<leader>d_', hidden = true },
         { '<leader>f', group = '[F]ile' },
         { '<leader>f_', hidden = true },
-        { '<leader>g', group = '[G]itsign\t' },
+        { '<leader>g', group = '[G]it\t' },
         { '<leader>g_', hidden = true },
-        { '<leader>n', group = '[N]eogit' },
-        { '<leader>n_', hidden = true },
         { '<leader>r', group = '[R]ename' },
         { '<leader>r_', hidden = true },
         { '<leader>s', group = '[S]earch' },
@@ -387,9 +385,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sl', fzf.spell_suggest, { desc = 'Spe[l]ling suggestion' })
       vim.keymap.set('n', '<leader>sh', fzf.helptags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', fzf.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>nh', fzf.git_branches, { desc = 'fzf git Branc[h]es' })
-      vim.keymap.set('n', '<leader>ns', fzf.git_status, { desc = 'fzf git [S]tatus' })
-      vim.keymap.set('n', '<leader>nt', fzf.git_stash, { desc = 'fzf [S]tashes' })
+      vim.keymap.set('n', '<leader>gh', fzf.git_branches, { desc = 'fzf git Branc[h]es' })
+      vim.keymap.set('n', '<leader>gl', fzf.git_status, { desc = 'fzf git [S]tatus' })
+      vim.keymap.set('n', '<leader>gt', fzf.git_stash, { desc = 'fzf [S]tashes' })
       vim.keymap.set('n', '<leader><leader>', fzf.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>fs', fzf.files, { desc = 'Fuzzy [S]earch for files in buf dir' })
       vim.keymap.set('n', '<leader>sn', fzf.files, { desc = 'Fuzzy [S]earch for files in cfg dir' })
