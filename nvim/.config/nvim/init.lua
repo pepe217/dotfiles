@@ -3,7 +3,7 @@
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
+vim.keymap.set('n', ';', ':', { noremap = true })
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -138,12 +138,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- copy paste system clipboard
-vim.keymap.set('n', '<leader>u', function()
-  vim.cmd 'w'
-end, { desc = 'save' })
-vim.keymap.set('n', '<leader>t', function()
-  vim.cmd 'x'
-end, { desc = 'exit' })
+vim.keymap.set('n', '<leader>u', ':w<CR>', { desc = 'save' })
+vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'save' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -328,47 +324,7 @@ require('lazy').setup({
     end,
     keys = {
       {
-        '<leader>nr',
-        mode = { 'n' },
-        function()
-          require('neogit').open { 'rebase' }
-        end,
-        desc = '[R]ebase',
-      },
-      {
-        '<leader>nm',
-        mode = { 'n' },
-        function()
-          require('neogit').open { 'merge' }
-        end,
-        desc = '[M]erge',
-      },
-      {
-        '<leader>nl',
-        mode = { 'n' },
-        function()
-          require('neogit').open { 'pull' }
-        end,
-        desc = 'Pu[l]l',
-      },
-      {
-        '<leader>np',
-        mode = { 'n' },
-        function()
-          require('neogit').open { 'push' }
-        end,
-        desc = '[P]ush',
-      },
-      {
-        '<leader>nb',
-        mode = { 'n' },
-        function()
-          require('neogit').open { 'branch' }
-        end,
-        desc = '[B]ranch',
-      },
-      {
-        '<leader>nn',
+        '<leader>n',
         mode = { 'n' },
         function()
           require('neogit').open {}
@@ -376,15 +332,15 @@ require('lazy').setup({
         desc = '[N]eogit',
       },
       {
-        '<leader>na',
+        '<leader>ge',
         mode = { 'n' },
         function()
-          require('neogit').open { 'stash' }
+          vim.cmd 'DiffviewOpen'
         end,
-        desc = 'St[a]sh UI',
+        desc = 'Open diffview',
       },
       {
-        '<leader>nc',
+        '<leader>c',
         mode = { 'n' },
         function()
           require('neogit').open { 'commit' }
@@ -392,23 +348,15 @@ require('lazy').setup({
         desc = '[C]ommit',
       },
       {
-        '<leader>nd',
-        mode = { 'n' },
-        function()
-          vim.cmd 'DiffviewOpen'
-        end,
-        desc = 'Open [d]iffview',
-      },
-      {
-        '<leader>ni',
+        '<leader>gi',
         mode = { 'n' },
         function()
           vim.cmd 'DiffviewFileHistory %'
         end,
-        desc = '[x]Diffview file history',
+        desc = 'Diffview file history',
       },
       {
-        '<leader>nx',
+        '<leader>gx',
         mode = { 'n' },
         function()
           vim.cmd 'DiffviewClose'
@@ -708,10 +656,6 @@ require('lazy').setup({
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
           map('<leader>r', vim.lsp.buf.rename, '[R]e[n]ame')
-
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
           -- Opens a popup that displays documentation about the word under your cursor
           --  See `:help K` for why this keymap.
