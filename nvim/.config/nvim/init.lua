@@ -21,6 +21,8 @@ vim.opt.relativenumber = true
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
+vim.opt.spell = true
+
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
@@ -1068,7 +1070,7 @@ require('lazy').setup({
       }
       require('mini.bufremove').setup()
 
-      vim.keymap.set('n', '<leader>ww', function()
+      vim.keymap.set('n', '<leader>x', function()
         MiniBufremove.delete()
       end, { desc = '[W]orkspace delete buffer' })
       vim.keymap.set('n', '<leader>fb', function()
