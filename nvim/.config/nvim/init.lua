@@ -320,7 +320,9 @@ require('lazy').setup({
       'ibhagwan/fzf-lua', -- optional
     },
     config = function()
-      require('neogit').setup { integrations = { fzf_lua = true } }
+      require('neogit').setup { integrations = { telescope = false, fzf_lua = true, diffview = true } }
+      local neogit = require 'neogit'
+      vim.keymap.set('n', '<leader>gcc', neogit.action('commit', 'commit', { '--verbose', '--all' }))
     end,
     keys = {
       {
@@ -1021,8 +1023,6 @@ require('lazy').setup({
       vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
       vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
       vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
-      require('mini.tabline').setup { set_vim_settings = false }
-      require('mini.git').setup()
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
