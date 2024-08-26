@@ -59,9 +59,9 @@ function M.add_to_decorator(input)
     for _, match, _ in query:iter_matches(decorator_node, buf) do
       local row, column, _ = match[2]:end_()
       local last_char = vim.api.nvim_buf_get_text(buf, row, column - 2, row, column - 1, {})[1]
-      local new_meas = string.format(' asd.measure(%s),', input)
+      local new_meas = string.format('asd.measure(%s),', input)
       if last_char == ')' then
-        new_meas = ',' .. new_meas
+        new_meas = ', ' .. new_meas
       end
       vim.api.nvim_buf_set_text(buf, row, column - 1, row, column - 1, { new_meas })
     end
