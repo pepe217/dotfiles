@@ -28,29 +28,50 @@ function M.add_to_decorator(input)
 
   local function_node, decorator_node
   for _, node in ipairs(nodes) do
-    local type = node:type()
-    if type == 'decorated_definition' then
+    local node_type = node:type()
+    if node_type == 'decorated_definition' then
       decorator_node = node
-    elseif type == 'function_definition' then
+    elseif node_type == 'function_definition' then
       function_node = node
     end
   end
 
-  if decorator_node ~= nil then
-    if function_node == nil then
-      -- wasn't executed inside a function, do nothing
-      return
-    else
-      -- need to add the entire decorator and measurement
-      local range = { function_node:range() }
-      local line = { string.format('@lol(%s)', input) }
-      vim.api.nvim_buf_set_lines(buf, range[1], range[1], false, line)
-      return
-    end
-  else
-    -- some decorators exist, try to find an existing add
+  if function_node == nil then
+    -- wasn't executed inside a function, do nothing
+    vim.notify('Was not called inside a function', vim.log.levels.WARN, { title = 'testing.nvim' })
+    vim.api.nvim_input '<esc>'
     return
   end
+  if decorator_node == nil then
+    M.add_full_decorator(buf, function_node, input)
+  else
+    -- some decorators exist
+    local query = vim.treesitter.query.parse(
+      'python',
+      [[
+    (decorator
+      (call
+        function: (attribute) @name (#eq? @name "asd.decorator")
+        arguments: (argument_list) @arguments))
+    ]]
+    )
+
+    for _, match, _ in query:iter_matches(decorator_node, buf) do
+      local row, column, _ = match[2]:end_()
+      local last_char = vim.api.nvim_buf_get_text(buf, row, column - 2, row, column - 1, {})[1]
+      local new_meas = string.format(' asd.measure(%s),', input)
+      if last_char == ')' then
+        new_meas = ',' .. new_meas
+      end
+      vim.api.nvim_buf_set_text(buf, row, column - 1, row, column - 1, { new_meas })
+    end
+  end
+end
+
+function M.add_full_decorator(buf, function_node, name)
+  local start = function_node:start()
+  local line = { string.format('@lol(%s)', name) }
+  vim.api.nvim_buf_set_lines(buf, start, start, false, line)
 end
 
 vim.ui.input({ prompt = 'Enter name:' }, M.add_to_decorator)
