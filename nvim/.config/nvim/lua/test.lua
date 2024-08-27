@@ -6,34 +6,22 @@ function M.add_to_decorator(input)
   end
   local buf = vim.api.nvim_win_get_buf(0)
   local pos = vim.api.nvim_win_get_cursor(0)
-  local parser = vim.treesitter.get_parser(buf)
+  local newline_pos = pos[1]
 
-  local nodes = {}
-  do
-    parser:for_each_tree(function(tstree, tree)
-      if not tstree then
-        return
-      end
-      -- get all ranges of the current node and its parents
-      local node = tree:named_node_for_range({ pos[1] - 1, pos[2], pos[1] - 1, pos[2] }, {
-        ignore_injections = true,
-      })
-
-      while node do
-        nodes[#nodes + 1] = node
-        node = node:parent() ---@type TSNode
-      end
-    end)
-  end
-
+  local cursor_node = vim.treesitter.get_node()
   local function_node, decorator_node
-  for _, node in ipairs(nodes) do
+  local node = cursor_node
+  while node do
     local node_type = node:type()
     if node_type == 'decorated_definition' then
       decorator_node = node
     elseif node_type == 'function_definition' then
       function_node = node
     end
+    if decorator_node ~= nil then
+      break
+    end
+    node = node:parent() --@type TSNode
   end
 
   if function_node == nil then
@@ -44,6 +32,7 @@ function M.add_to_decorator(input)
   end
   if decorator_node == nil then
     M.add_full_decorator(buf, function_node, input)
+    newline_pos = newline_pos + 1
   else
     -- some decorators exist
     -- this checks for the measurement already existing
@@ -57,7 +46,9 @@ function M.add_to_decorator(input)
     ]]
     )
 
+    local found = false
     for _, match, _ in query:iter_matches(decorator_node, buf) do
+      found = true
       local row, column, _ = match[2]:end_()
       local last_char = vim.api.nvim_buf_get_text(buf, row, column - 2, row, column - 1, {})[1]
       local new_meas = string.format("asd.measure('%s'),", input)
@@ -66,11 +57,17 @@ function M.add_to_decorator(input)
       end
       vim.api.nvim_buf_set_text(buf, row, column - 1, row, column - 1, { new_meas })
     end
+
+    if not found then
+      -- add the decorator node
+      M.add_full_decorator(buf, function_node, input)
+      newline_pos = newline_pos + 1
+    end
   end
   -- get indentation level for inserting new text
   local non_blank = vim.api.nvim_get_current_line():match('^%s*'):len()
-  vim.api.nvim_buf_set_lines(buf, pos[1], pos[1], true, { string.rep(' ', non_blank) .. 'asdfasdf = ' })
-  vim.api.nvim_win_set_cursor(0, { pos[1] + 1, 0 })
+  vim.api.nvim_buf_set_lines(buf, newline_pos, newline_pos, true, { string.rep(' ', non_blank) .. 'asdfasdf = ' })
+  vim.api.nvim_win_set_cursor(0, { newline_pos + 1, 0 })
   vim.cmd 'startinsert!'
 end
 
