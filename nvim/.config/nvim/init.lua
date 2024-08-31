@@ -1023,7 +1023,7 @@ require('lazy').setup({
         vim.diagnostic.goto_next { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
       end, { desc = 'Next Warn/Error' })
       vim.keymap.set('n', '[e', function()
-        vim.diagnostic.goto_next { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
+        vim.diagnostic.goto_prev { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
       end, { desc = 'Prev Warn/Error' })
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
