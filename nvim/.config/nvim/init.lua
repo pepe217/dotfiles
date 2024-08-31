@@ -77,10 +77,6 @@ vim.opt.scrolloff = 999
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- tab movement
-vim.keymap.set('n', ']g', ':tabnext<CR>', { desc = 'Next tab' })
-vim.keymap.set('n', '[g', ':tabprevious<CR>', { desc = 'Previous tab' })
-
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', function()
