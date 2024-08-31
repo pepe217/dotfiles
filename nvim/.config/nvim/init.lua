@@ -150,6 +150,14 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+-- only "severe" diagnostics
+vim.keymap.set('n', ']e', function()
+  vim.diagnostic.goto_next { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
+end, { desc = 'Next Warn/Error' })
+vim.keymap.set('n', '[e', function()
+  vim.diagnostic.goto_prev { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
+end, { desc = 'Prev Warn/Error' })
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -827,7 +835,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         python = { 'isort', 'yapf' },
-        json = { 'jq'}
+        json = { 'jq' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
@@ -1010,21 +1018,6 @@ require('lazy').setup({
       require('mini.files').setup()
       require('mini.indentscope').setup()
       require('mini.bracketed').setup()
-      -- like these better than the ones the come with bracketed
-      -- diagnostic
-      local diagnostic_goto = function(next, severity)
-        local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
-        severity = severity and vim.diagnostic.severity[severity] or nil
-        return function()
-          go { severity = severity }
-        end
-      end
-      vim.keymap.set('n', ']e', function()
-        vim.diagnostic.goto_next { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
-      end, { desc = 'Next Warn/Error' })
-      vim.keymap.set('n', '[e', function()
-        vim.diagnostic.goto_prev { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
-      end, { desc = 'Prev Warn/Error' })
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
