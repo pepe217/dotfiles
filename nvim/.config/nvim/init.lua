@@ -94,11 +94,12 @@ for key_index = 1, #movement_keys do
   vim.keymap.set('t', string.format('<M-%s>', movement_keys[key_index]), string.format('<C-\\><C-n><C-w>%s', movement_keys[key_index]), { noremap = true })
   vim.keymap.set({ '', 'i' }, mac_option_keys[key_index], string.format('<Esc><C-w>%s', movement_keys[key_index]), { noremap = true })
   vim.keymap.set('t', mac_option_keys[key_index], string.format('<C-\\><C-n><C-w>%s', movement_keys[key_index]), { noremap = true })
-  vim.keymap.set('n', string.format('<leader>%s', movement_keys[key_index]), string.format('<C-w>%s', movement_keys[key_index]), { noremap = true })
 end
 
 -- easy open terminals
--- vim.keymap.set('n', '<leader>bv', vim.cmd 'terminal', { noremap = true })
+vim.keymap.set('n', '<leader>bb', '<Cmd>term<CR>', { noremap = true, desc = 'Terminal in existing window' })
+vim.keymap.set('n', '<leader>bv', '<Cmd>vsplit term://zsh<CR>', { noremap = true, desc = 'Terminal in vsplit window' })
+vim.keymap.set('n', '<leader>bs', '<Cmd>split term://zsh<CR>', { noremap = true, desc = 'Terminal in split window' })
 
 -- Faster window resizing
 vim.keymap.set('n', '<C-h>', '5<C-w><', { desc = 'Decrease window width' })
