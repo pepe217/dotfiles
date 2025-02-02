@@ -79,9 +79,12 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>Q', function()
+  vim.diagnostic.setqflist()
+end, { desc = 'Open diagnostic quickfix list' })
 vim.keymap.set('n', '<leader>q', function()
-  vim.diagnostic.setloclist { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
-end, { desc = 'Open diagnostic [Q]uickfix list' })
+  vim.diagnostic.setloclist()
+end, { desc = 'Open diagnostic loc list' })
 
 -- Better exit terminal key
 vim.keymap.set('t', '`', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -162,35 +165,267 @@ vim.keymap.set('n', '[e', function()
   vim.diagnostic.goto_prev { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
 end, { desc = 'Prev Warn/Error' })
 
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
--- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  -- NOTE: Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
-  --
-  -- Use `opts = {}` to force a plugin to be loaded.
-  --
-  --  This is equivalent to:
-  --    require('Comment').setup({})
-
-  -- "gc" to comment visual regions/lines
-  -- { 'numToStr/Comment.nvim', opts = {} },
-
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
+  {
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      picker = {
+        enabled = true,
+        win = {
+          keys = {
+            ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
+            ['ß'] = { 'flash', mode = { 'n', 'i' } },
+            ['s'] = { 'flash' },
+          },
+        },
+        actions = {
+          flash = function(picker)
+            require('flash').jump {
+              pattern = '^',
+              label = { after = { 0, 0 } },
+              search = {
+                mode = 'search',
+                exclude = {
+                  function(win)
+                    return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
+                  end,
+                },
+              },
+              action = function(match)
+                local idx = picker.list:row2idx(match.pos[1])
+                picker.list:_move(idx, true, true)
+              end,
+            }
+          end,
+        },
+      },
+      words = { enabled = true },
+    },
+    keys = {
+      {
+        '<leader>s.',
+        function()
+          Snacks.picker.recent()
+        end,
+        desc = 'Recently Closed',
+      },
+      {
+        '<leader><leader>',
+        function()
+          Snacks.picker.buffers()
+        end,
+        desc = 'Buffers',
+      },
+      {
+        '<leader>sh',
+        function()
+          Snacks.picker.help()
+        end,
+        desc = 'Help Pages',
+      },
+      {
+        '<leader>sk',
+        function()
+          Snacks.picker.keymaps()
+        end,
+        desc = 'Keymaps',
+      },
+      {
+        '<leader>sn',
+        function()
+          Snacks.picker.files { cwd = vim.fn.stdpath 'config' }
+        end,
+        desc = 'Find Config File',
+      },
+      {
+        '<leader>a',
+        function()
+          Snacks.picker.smart()
+        end,
+        desc = 'Files',
+      },
+      {
+        '<leader>sn',
+        function()
+          Snacks.picker.files { cwd = vim.fn.expand '%:p:h' }
+        end,
+        desc = 'Search Files current dir',
+      },
+      {
+        '<leader>ss',
+        function()
+          Snacks.picker()
+        end,
+        desc = 'Pickers',
+      },
+      {
+        '<leader>sw',
+        function()
+          Snacks.picker.grep_word()
+        end,
+        desc = 'Visual selection or word',
+        mode = { 'n', 'x' },
+      },
+      {
+        '<leader>i',
+        function()
+          Snacks.picker.grep()
+        end,
+        desc = 'Grep',
+      },
+      {
+        '<leader>sd',
+        function()
+          Snacks.picker.diagnostics()
+        end,
+        desc = 'Workspace Diagnostics',
+      },
+      {
+        '<leader>sr',
+        function()
+          Snacks.picker.resume()
+        end,
+        desc = 'Resume',
+      },
+      {
+        '<leader>/',
+        function()
+          Snacks.picker.lines()
+        end,
+        desc = 'Buffer Lines',
+      },
+      {
+        '<leader>;',
+        function()
+          Snacks.picker.command_history()
+        end,
+        desc = 'Command History',
+      },
+      {
+        '<leader>:',
+        function()
+          Snacks.picker.commands()
+        end,
+        desc = 'Commands',
+      },
+      {
+        '<leader>?',
+        function()
+          Snacks.picker.search_history()
+        end,
+        desc = 'Search History',
+      },
+      {
+        '<leader>sm',
+        function()
+          Snacks.picker.marks()
+        end,
+        desc = 'Marks',
+      },
+      {
+        '<leader>sj',
+        function()
+          Snacks.picker.jumps()
+        end,
+        desc = 'Jumps',
+      },
+      {
+        '<leader>s"',
+        function()
+          Snacks.picker.registers()
+        end,
+        desc = 'Registers',
+      },
+      {
+        'gd',
+        function()
+          Snacks.picker.lsp_definitions()
+        end,
+        desc = 'Goto Definition',
+      },
+      {
+        'gr',
+        function()
+          Snacks.picker.lsp_references()
+        end,
+        nowait = true,
+        desc = 'References',
+      },
+      {
+        'gI',
+        function()
+          Snacks.picker.lsp_implementations()
+        end,
+        desc = 'Goto Implementation',
+      },
+      {
+        'gy',
+        function()
+          Snacks.picker.lsp_type_definitions()
+        end,
+        desc = 'Goto T[y]pe Definition',
+      },
+      {
+        ']]',
+        function()
+          Snacks.words.jump(vim.v.count1)
+        end,
+        desc = 'Next Reference',
+        mode = { 'n', 't' },
+      },
+      {
+        '[[',
+        function()
+          Snacks.words.jump(-vim.v.count1)
+        end,
+        desc = 'Prev Reference',
+        mode = { 'n', 't' },
+      },
+      {
+        '<leader>dm',
+        function()
+          Snacks.picker.lsp_symbols { filter = {
+            default = {
+              'Method',
+            },
+          } }
+        end,
+        desc = 'LSP Methods',
+      },
+      {
+        '<leader>de',
+        function()
+          Snacks.picker.diagnostics_buffer()
+        end,
+        desc = 'Buffer diagnostics',
+      },
+      {
+        '<leader>dc',
+        function()
+          Snacks.picker.lsp_symbols { filter = {
+            default = {
+              'Function',
+            },
+          } }
+        end,
+        desc = 'LSP Function',
+      },
+      {
+        '<leader>dc',
+        function()
+          Snacks.picker.lsp_symbols { filter = {
+            default = {
+              'Classes',
+            },
+          } }
+        end,
+        desc = 'LSP Classes',
+      },
+    },
+  },
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -236,10 +471,9 @@ require('lazy').setup({
           gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
         end, { desc = 'reset git hunk' })
         -- normal mode
-        map('n', '<leader>gs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })
+        map('n', '<leader>gs', gitsigns.stage_hunk, { desc = 'git [s]tage/unstage hunk' })
         map('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'git [r]eset hunk' })
         map('n', '<leader>gS', gitsigns.stage_buffer, { desc = 'git [S]tage buffer' })
-        map('n', '<leader>gu', gitsigns.undo_stage_hunk, { desc = 'git [u]ndo stage hunk' })
         map('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
         map('n', '<leader>gp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
         map('n', '<leader>gb', gitsigns.blame_line, { desc = 'git [b]lame line' })
@@ -247,27 +481,11 @@ require('lazy').setup({
         map('n', '<leader>gD', function()
           gitsigns.diffthis '@'
         end, { desc = 'git [D]iff against last commit' })
-        -- Toggles
-        -- map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
-        -- map('n', '<leader>tD', gitsigns.toggle_deleted, { desc = '[T]oggle git show [D]eleted' })
+        map('n', '<leader>gt', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show blame line' })
+        map('n', '<leader>gT', gitsigns.toggle_deleted, { desc = '[T]oggle git show deleted' })
       end,
     },
   },
-
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-  --
-  -- This is often very useful to both group configuration, as well as handle
-  -- lazy loading plugins that don't need to be loaded immediately at startup.
-  --
-  -- For example, in the following configuration, we use:
-  --  event = 'VimEnter'
-  --
-  -- which loads which-key before all the UI elements are loaded. Events can be
-  -- normal autocommands events (`:help autocmd-events`).
-  --
-  -- Then, because we use the `config` key, the configuration only runs
-  -- after the plugin has been loaded:
-  --  config = function() ... end
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
@@ -357,12 +575,15 @@ require('lazy').setup({
     dependencies = {
       'nvim-lua/plenary.nvim', -- required
       'sindrets/diffview.nvim', -- optional - Diff integration
-      'ibhagwan/fzf-lua', -- optional
     },
     config = function()
+      local style = 'kitty'
+      if vim.g.neovide then
+        style = 'unicode'
+      end
       require('neogit').setup {
-        graph_style = 'kitty',
-        integrations = { telescope = false, fzf_lua = true, diffview = true },
+        graph_style = style,
+        integrations = { telescope = false, fzf_lua = false, diffview = true },
         commit_editor = { show_staged_diff = false },
       }
       local neogit = require 'neogit'
@@ -379,66 +600,6 @@ require('lazy').setup({
       },
     },
   },
-  -- fzf-lua picker
-  {
-    'ibhagwan/fzf-lua',
-    -- optional for icon support
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = function()
-      -- calling `setup` is optional for customization
-      local actions = require 'fzf-lua.actions'
-      require('fzf-lua').setup {
-        grep = {
-          actions = {
-            ['ctrl-q'] = {
-              fn = actions.file_edit_or_qf,
-              prefix = 'select-all+',
-            },
-          },
-        },
-      }
-      local fzf = require 'fzf-lua'
-      fzf.register_ui_select()
-      vim.keymap.set('n', '<leader>sl', fzf.spell_suggest, { desc = 'Spe[l]ling suggestion' })
-      vim.keymap.set('n', '<leader>sh', fzf.helptags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', fzf.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader><leader>', fzf.buffers, { desc = 'Find existing buffers' })
-      vim.keymap.set('n', '<leader>sn', function()
-        fzf.files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = 'Fuzzy [S]earch for files in cfg dir' })
-      vim.keymap.set('n', '<leader>sa', function()
-        fzf.files { previewer = false }
-      end, { desc = 'Search [A]ll Files' })
-      vim.keymap.set('n', '<leader>sb', function()
-        fzf.files { cwd = vim.fn.expand '%:p:h' }
-      end, { desc = 'Search Files current dir' })
-      vim.keymap.set('n', '<leader>a', fzf.files, { desc = 'Search [A]ll Files' })
-      vim.keymap.set('n', '<leader>A', function()
-        fzf.files { resume = true }
-      end, { desc = 'Resume search [A]ll Files' })
-      vim.keymap.set('n', '<leader>ss', fzf.builtin, { desc = '[S]earch [S]elect fzf pickers' })
-      vim.keymap.set('n', '<leader>sw', fzf.grep_cword, { desc = '[S]earch current [w]ord' })
-      vim.keymap.set('n', '<leader>i', fzf.live_grep_glob, { desc = '[I]Search by Grep' })
-      vim.keymap.set('n', '<leader>I', function()
-        fzf.live_grep_glob { resume = true }
-      end, { desc = 'Resume [I]search by Grep' })
-      vim.keymap.set('n', '<leader>sd', fzf.diagnostics_document, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', fzf.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', fzf.oldfiles, { desc = '[S]earch Recent Files' })
-      vim.keymap.set('n', '<leader>/', fzf.grep_curbuf, { desc = '[/] Fuzzily search in current buffer' })
-      vim.keymap.set('n', '<leader>?', fzf.lgrep_curbuf, { desc = '[?] Grep search in current buffer' })
-      vim.keymap.set('n', '<leader>;', fzf.command_history, { desc = 'search recent commands' })
-      vim.keymap.set('n', '<leader>:', fzf.commands, { desc = 'commands' })
-      vim.keymap.set('n', '<leader>s/', fzf.search_history, { desc = 'search recent searches' })
-      vim.keymap.set('n', '<leader>sm', fzf.marks, { desc = 'search marks' })
-      vim.keymap.set('n', '<leader>sj', fzf.jumps, { desc = 'search jumps' })
-      vim.keymap.set('n', '<leader>sc', fzf.changes, { desc = 'search changes' })
-      vim.keymap.set('n', '<leader>sg', fzf.registers, { desc = 'search registers' })
-      vim.keymap.set('v', '<leader>sv', fzf.grep_visual, { desc = 'Grep search selection' })
-      vim.keymap.set({ 'n', 'i', 'v' }, 'ƒ', fzf.complete_line)
-    end,
-  },
-
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -494,63 +655,6 @@ require('lazy').setup({
               func(options)
             end, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
-
-          -- Jump to the definition of the word under your cursor.
-          --  This is where a variable was first declared, or where a function is defined, etc.
-          --  To jump back, press <C-t>.
-          map('gd', require('fzf-lua').lsp_definitions, '[G]oto [D]efinition')
-
-          -- Find references for the word under your cursor.
-          map('gr', require('fzf-lua').lsp_references, '[G]oto [R]eferences')
-
-          -- Jump to the implementation of the word under your cursor.
-          --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gI', require('fzf-lua').lsp_implementations, '[G]oto [I]mplementation')
-
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('fzf-lua').lsp_type_definitions, 'Type [D]efinition')
-
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
-          --
-          map('<leader>ds', require('fzf-lua').lsp_document_diagnostics, '[D]ocument [S]ymbols', { multiline = 2 })
-          map('<leader>dv', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
-            regex_filter = function(e, _)
-              return 'Variable' == e.kind
-            end,
-          })
-          map('<leader>dz', require('fzf-lua').lsp_document_symbols, '[D]ocument [S]ymbols', {
-            regex_filter = function(e, _)
-              return 'Constant' == e.kind
-            end,
-          })
-          map('<leader>dy', require('fzf-lua').diagnostics_document, '[D]ocument [S]ymbols', { severity_bound = 3 })
-
-          -- constants only
-          --
-          map('<leader>do', require('fzf-lua').lsp_document_symbols, '[D]ocument C[o]nstants', { symbols = 'constant' })
-
-          --  classes only
-          --
-          map('<leader>dc', require('fzf-lua').lsp_document_symbols, '[D]ocument [C]lasses', { symbols = 'class' })
-
-          --  functions only
-          --
-          map('<leader>df', require('fzf-lua').lsp_document_symbols, '[D]ocument [F]unctions', { symbols = 'function' })
-
-          --  diagnostics
-          --
-          map('<leader>dd', require('fzf-lua').diagnostics, '[D]ocument [D]iagnostics', { bufnr = 0 })
-
-          -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('fzf-lua').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-          --  diagnostics
-          --
-          map('<leader>wd', require('fzf-lua').diagnostics, '[W]orkspace [D]iagnostics')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
@@ -894,29 +998,9 @@ require('lazy').setup({
       vim.cmd.colorscheme 'tokyonight-night'
       -- vim.cmd.colorscheme 'sonokai'
       -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      -- vim.cmd.hi 'Comment gui=none'
     end,
   },
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'catppuccin/nvim',
-    -- 'sainnhe/sonokai',
-    -- priority = 1000, -- Make sure to load this before all the other start plugins.
-    -- init = function()
-    --   -- Load the colorscheme here.
-    --   -- Like many other themes, this one has different styles, and you could load
-    --   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-    --   -- vim.cmd.colorscheme 'tokyonight-storm'
-    --   vim.cmd.colorscheme 'catppuccin-mocha'
-    --   -- vim.cmd.colorscheme 'sonokai'
-    --   -- You can configure highlights by doing something like:
-    --   vim.cmd.hi 'Comment gui=none'
-    -- end,
-  },
-
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
@@ -1093,13 +1177,6 @@ require('lazy').setup({
       cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
     end,
   },
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
