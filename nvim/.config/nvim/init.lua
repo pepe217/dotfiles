@@ -79,12 +79,6 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>Q', function()
-  vim.diagnostic.setqflist()
-end, { desc = 'Open diagnostic quickfix list' })
-vim.keymap.set('n', '<leader>q', function()
-  vim.diagnostic.setloclist()
-end, { desc = 'Open diagnostic loc list' })
 
 -- Better exit terminal key
 vim.keymap.set('t', '`', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -117,6 +111,14 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'TermOpen' }, {
   command = 'startinsert',
 })
 
+-- Disable line numbers in terminal buffers
+vim.api.nvim_create_autocmd({ 'TermOpen' }, {
+  group = vim.api.nvim_create_augroup('custom-term-open', { clear = true }),
+  callback = function()
+    vim.opt.number = false
+    vim.opt.relativenumber = false
+  end,
+})
 -- github convenience links
 local github_url = function()
   local rel_path = vim.fn.expand '%:.'
@@ -157,7 +159,6 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- only "severe" diagnostics
 vim.keymap.set('n', ']e', function()
   vim.diagnostic.goto_next { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
 end, { desc = 'Next Warn/Error' })
@@ -166,6 +167,123 @@ vim.keymap.set('n', '[e', function()
 end, { desc = 'Prev Warn/Error' })
 
 require('lazy').setup({
+  {
+    'stevearc/quicker.nvim',
+    event = 'VeryLazy',
+    opts = {
+      borders = {
+        -- Thinner separator.
+        vert = '│',
+      },
+    },
+    keys = {
+      {
+        '<leader>bq',
+        function()
+          require('quicker').toggle()
+        end,
+        desc = 'Toggle quickfix',
+      },
+      {
+        '<leader>bl',
+        function()
+          require('quicker').toggle { loclist = true }
+        end,
+        desc = 'Toggle loclist list',
+      },
+      {
+        '<leader>q',
+        function()
+          local quicker = require 'quicker'
+
+          if quicker.is_open() then
+            quicker.close()
+          else
+            vim.diagnostic.setloclist()
+          end
+        end,
+        desc = 'Toggle diagnostics (loc)',
+      },
+      {
+        '<leader>Q',
+        function()
+          local quicker = require 'quicker'
+
+          if quicker.is_open() then
+            quicker.close()
+          else
+            vim.diagnostic.setqflist()
+          end
+        end,
+        desc = 'Toggle diagnostics (qf)',
+      },
+      {
+        '>',
+        function()
+          require('quicker').expand { before = 2, after = 2, add_to_existing = true }
+        end,
+        desc = 'Expand context',
+      },
+      {
+        '<',
+        function()
+          require('quicker').collapse()
+        end,
+        desc = 'Collapse context',
+      },
+    },
+  },
+  {
+    'smoka7/multicursors.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'nvimtools/hydra.nvim',
+    },
+    config = function()
+      require('multicursors').setup {
+        hint_config = {
+          float_opts = {
+            border = 'rounded',
+          },
+          position = 'bottom-right',
+        },
+        generate_hints = {
+          normal = true,
+          insert = true,
+          extend = true,
+          config = {
+            column_count = 1,
+          },
+        },
+      }
+    end,
+    opts = {},
+    cmd = { 'MCstart', 'MCvisual', 'MCclear', 'MCpattern', 'MCvisualPattern', 'MCunderCursor' },
+    keys = {
+      {
+        mode = { 'v', 'n' },
+        '<Leader>m',
+        '<cmd>MCstart<cr>',
+        desc = 'Create a selection for selected text or word under the cursor',
+      },
+    },
+  },
+  {
+    'gbprod/yanky.nvim',
+    opts = {
+      ring = { history_length = 20 },
+      highlight = { timer = 250 },
+    },
+    keys = {
+      { 'p', '<Plug>(YankyPutAfter)', mode = { 'n', 'x' }, desc = 'Put yanked text after cursor' },
+      { 'P', '<Plug>(YankyPutBefore)', mode = { 'n', 'x' }, desc = 'Put yanked text before cursor' },
+      { '=p', '<Plug>(YankyPutAfterLinewise)', desc = 'Put yanked text in line below' },
+      { '=P', '<Plug>(YankyPutBeforeLinewise)', desc = 'Put yanked text in line above' },
+      { '[y', '<Plug>(YankyCycleForward)', desc = 'Cycle forward through yank history' },
+      { ']y', '<Plug>(YankyCycleBackward)', desc = 'Cycle backward through yank history' },
+      { 'y', '<Plug>(YankyYank)', mode = { 'n', 'x' }, desc = 'Yanky yank' },
+    },
+  },
   {
     'folke/snacks.nvim',
     priority = 1000,
@@ -319,21 +437,21 @@ require('lazy').setup({
         desc = 'Search History',
       },
       {
-        '<leader>sm',
+        "<leader>'",
         function()
           Snacks.picker.marks()
         end,
         desc = 'Marks',
       },
       {
-        '<leader>sj',
+        '<leader>j',
         function()
           Snacks.picker.jumps()
         end,
         desc = 'Jumps',
       },
       {
-        '<leader>s"',
+        '<leader>"',
         function()
           Snacks.picker.registers()
         end,
@@ -532,6 +650,7 @@ require('lazy').setup({
   {
     'sindrets/diffview.nvim',
     lazy = false,
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require('diffview').setup {
         view = {
@@ -557,6 +676,14 @@ require('lazy').setup({
           vim.cmd 'DiffviewFileHistory %'
         end,
         desc = 'Diffview file history',
+      },
+      {
+        '<leader>gm',
+        mode = { 'n' },
+        function()
+          vim.cmd 'DiffviewOpen origin/master'
+        end,
+        desc = 'Diff against [m]aster',
       },
       {
         '<leader>gx',
@@ -1064,7 +1191,7 @@ require('lazy').setup({
 
       vim.keymap.set('n', '<leader>x', function()
         MiniBufremove.delete()
-      end, { desc = '[W]orkspace delete buffer' })
+      end, { desc = 'Workspace delete buffer' })
       vim.keymap.set('n', '<leader>db', function()
         MiniFiles.open(vim.api.nvim_buf_get_name(0), nil)
       end, { desc = 'File [B]rowser current files dir' })
