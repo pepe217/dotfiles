@@ -171,6 +171,19 @@ end, { desc = 'Prev Warn/Error' })
 
 require('lazy').setup({
   {
+    'MagicDuck/grug-far.nvim',
+    config = function()
+      -- optional setup call to override plugin options
+      -- alternatively you can set options with vim.g.grug_far = { ... }
+      require('grug-far').setup {
+        -- options, see Configuration section below
+        -- there are no required options atm
+        -- engine = 'ripgrep' is default, but 'astgrep' or 'astgrep-rules' can
+        -- be specified
+      }
+    end,
+  },
+  {
     'stevearc/quicker.nvim',
     event = 'VeryLazy',
     opts = {
@@ -181,21 +194,21 @@ require('lazy').setup({
     },
     keys = {
       {
-        '<leader>bq',
+        '<leader>Q',
         function()
           require('quicker').toggle()
         end,
         desc = 'Toggle quickfix',
       },
       {
-        '<leader>bl',
+        '<leader>L',
         function()
           require('quicker').toggle { loclist = true }
         end,
         desc = 'Toggle loclist list',
       },
       {
-        '<leader>q',
+        '<leader>l',
         function()
           local quicker = require 'quicker'
 
@@ -208,7 +221,7 @@ require('lazy').setup({
         desc = 'Toggle diagnostics (loc)',
       },
       {
-        '<leader>Q',
+        '<leader>q',
         function()
           local quicker = require 'quicker'
 
@@ -365,6 +378,20 @@ require('lazy').setup({
       words = { enabled = true },
     },
     keys = {
+      {
+        '<leader>sq',
+        function()
+          Snacks.picker.qflist()
+        end,
+        desc = 'Quickfix',
+      },
+      {
+        '<leader>sl',
+        function()
+          Snacks.picker.qflist()
+        end,
+        desc = 'Loclist',
+      },
       {
         '<leader>s.',
         function()
@@ -794,8 +821,8 @@ require('lazy').setup({
     'NeogitOrg/neogit',
     lazy = false,
     dependencies = {
-      'nvim-lua/plenary.nvim', -- required
-      'sindrets/diffview.nvim', -- optional - Diff integration
+      'nvim-lua/plenary.nvim',
+      'sindrets/diffview.nvim',
     },
     config = function()
       local style = 'kitty'
@@ -947,7 +974,7 @@ require('lazy').setup({
       },
     },
     opts = {
-      notify_on_error = false,
+      notify_on_error = true,
       format_on_save = false,
       formatters_by_ft = {
         lua = { 'stylua' },
@@ -957,7 +984,6 @@ require('lazy').setup({
       },
     },
   },
-
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -968,8 +994,7 @@ require('lazy').setup({
           -- Build Step is needed for regex support in snippets.
           return 'make install_jsregexp'
         end)(),
-        dependencies = {
-        },
+        dependencies = {},
       },
       'saadparwaiz1/cmp_luasnip',
       'hrsh7th/cmp-nvim-lsp',
@@ -1128,7 +1153,6 @@ require('lazy').setup({
       require('nvim-treesitter.install').prefer_git = true
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
-
     end,
     init = function()
       -- Enable code folding.
@@ -1173,6 +1197,14 @@ require('lazy').setup({
       local cmp = require 'cmp'
       cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
     end,
+  },
+  {
+    'chrisgrieser/nvim-spider',
+    keys = {
+      { 'w', "<cmd>lua require('spider').motion('w')<CR>", mode = { 'n', 'o', 'x' } },
+      { 'e', "<cmd>lua require('spider').motion('e')<CR>", mode = { 'n', 'o', 'x' } },
+      { 'b', "<cmd>lua require('spider').motion('b')<CR>", mode = { 'n', 'o', 'x' } },
+    },
   },
 }, {
   ui = {
