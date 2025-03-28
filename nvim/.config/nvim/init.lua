@@ -4,6 +4,23 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- neovide specific things
+if vim.g.neovide then
+  vim.keymap.set('n', '<D-s>', ':w<CR>') -- Save
+  vim.keymap.set('v', '<D-c>', '"+y') -- Copy
+  vim.keymap.set('n', '<D-v>', '"+P') -- Paste normal mode
+  vim.keymap.set('v', '<D-v>', '"+P') -- Paste visual mode
+  vim.keymap.set('c', '<D-v>', '<C-R>+') -- Paste command mode
+  vim.keymap.set('i', '<D-v>', '<ESC>l"+Pli') -- Paste insert mode
+  vim.keymap.set('n', '<D-q>', ':wqall<CR>')
+end
+
+-- Allow clipboard copy paste in neovim
+vim.api.nvim_set_keymap('', '<D-v>', '+p<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('!', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -22,9 +39,6 @@ vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 
 vim.opt.spell = true
-
--- show the function signature
-vim.keymap.set('i', '<c-s>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -82,6 +96,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.diagnostic.config { virtual_lines = true }
 
 -- Better exit terminal key
 vim.keymap.set('t', '`', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -163,25 +178,31 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 vim.keymap.set('n', ']e', function()
-  vim.diagnostic.goto_next { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
+  vim.diagnostic.jump { float = false, count = 1, severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
 end, { desc = 'Next Warn/Error' })
 vim.keymap.set('n', '[e', function()
-  vim.diagnostic.goto_prev { severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
+  vim.diagnostic.jump { float = false, count = -1, severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN } }
 end, { desc = 'Prev Warn/Error' })
 
 require('lazy').setup({
+  'mbbill/undotree',
   {
     'MagicDuck/grug-far.nvim',
-    config = function()
-      -- optional setup call to override plugin options
-      -- alternatively you can set options with vim.g.grug_far = { ... }
-      require('grug-far').setup {
-        -- options, see Configuration section below
-        -- there are no required options atm
-        -- engine = 'ripgrep' is default, but 'astgrep' or 'astgrep-rules' can
-        -- be specified
-      }
-    end,
+    cmd = 'GrugFar',
+    keys = {
+      {
+        '<leader>dg',
+        function()
+          local grug = require 'grug-far'
+          grug.open {
+            transient = true,
+            keymaps = { help = '?' },
+          }
+        end,
+        desc = 'GrugFar',
+        mode = { 'n', 'v' },
+      },
+    },
   },
   {
     'stevearc/quicker.nvim',
@@ -767,7 +788,6 @@ require('lazy').setup({
       },
     },
   },
-  -- enhanced diffs
   {
     'sindrets/diffview.nvim',
     lazy = false,
@@ -816,7 +836,6 @@ require('lazy').setup({
       },
     },
   },
-  -- git UI
   {
     'NeogitOrg/neogit',
     lazy = false,
@@ -958,7 +977,6 @@ require('lazy').setup({
       }
     end,
   },
-
   { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
@@ -1022,7 +1040,7 @@ require('lazy').setup({
             return vim_item
           end,
         },
-        completion = { completeopt = 'menu,menuone,noinsert' },
+        completion = { completeopt = 'menu,menuone,noselect,fuzzy' },
 
         mapping = cmp.mapping.preset.insert {
           ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -1089,8 +1107,22 @@ require('lazy').setup({
       require('mini.ai').setup { n_lines = 500 }
       require('mini.files').setup()
       require('mini.indentscope').setup()
-      require('mini.bracketed').setup()
       require('mini.icons').setup()
+      require('mini.move').setup {
+        mappings = {
+          -- Move visual selection in Visual mode.
+          left = '<C-h>',
+          right = '<C-l>',
+          down = '<C-j>',
+          up = '<C-k>',
+
+          -- Move current line in Normal mode
+          line_left = '<C-h>',
+          line_right = '<C-l>',
+          line_down = '<C-j>',
+          line_up = '<C-k>',
+        },
+      }
       require('mini.surround').setup {
         mappings = {
           add = 'gsa', -- Add surrounding in Normal and Visual modes
