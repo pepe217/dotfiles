@@ -117,10 +117,10 @@ vim.keymap.set('n', '<leader>bv', '<Cmd>vsplit term://zsh<CR>', { noremap = true
 vim.keymap.set('n', '<leader>bs', '<Cmd>split term://zsh<CR>', { noremap = true, desc = 'Terminal in split window' })
 
 -- Faster window resizing
-vim.keymap.set('n', '<C-h>', '5<C-w><', { desc = 'Decrease window width' })
-vim.keymap.set('n', '<C-l>', '5<C-w>>', { desc = 'Increase window width' })
-vim.keymap.set('n', '<C-j>', '5<C-w>-', { desc = 'Decrease window height' })
-vim.keymap.set('n', '<C-k>', '5<C-w>+', { desc = 'Increase window height' })
+vim.keymap.set('n', '<D-h>', '5<C-w><', { desc = 'Decrease window width' })
+vim.keymap.set('n', '<D-l>', '5<C-w>>', { desc = 'Increase window width' })
+vim.keymap.set('n', '<D-j>', '5<C-w>-', { desc = 'Decrease window height' })
+vim.keymap.set('n', '<D-k>', '5<C-w>+', { desc = 'Increase window height' })
 vim.keymap.set('n', '<leader>=', '<C-w>=', { desc = 'Set window sizes equal' })
 
 -- Enter insert mode when entering a terminal window.
@@ -165,7 +165,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- easier save and close
-vim.keymap.set('n', '<leader>h', ':w<CR>', { desc = 'save' })
+vim.keymap.set('n', '<leader>f', ':w<CR>', { desc = 'save' })
 vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'exit' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -397,7 +397,17 @@ require('lazy').setup({
         enabled = true,
       },
       words = { enabled = true },
+      indent = { enabled = true },
+      scope = { enabled = true },
     },
+    -- config = function()
+    --   vim.api.nvim_create_autocmd('User', {
+    --     pattern = 'MiniFilesActionRename',
+    --     callback = function(event)
+    --       Snacks.rename.on_rename_file(event.data.from, event.data.to)
+    --     end,
+    --   })
+    -- end,
     keys = {
       {
         '<leader>sq',
@@ -740,6 +750,7 @@ require('lazy').setup({
     opts = {
       labels = 'aeichtnsrkmgpfjldwvuoybxqz',
       modes = { char = { highlight = { backdrop = false } } },
+      search = { mode = 'search' },
     },
     -- stylua: ignore
     keys = {
@@ -982,7 +993,7 @@ require('lazy').setup({
     lazy = false,
     keys = {
       {
-        '<leader>f',
+        '<leader>h',
         function()
           require('conform').format { async = false, lsp_fallback = false }
           vim.cmd 'w'
@@ -1104,10 +1115,9 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
+      require('mini.tabline').setup()
       require('mini.ai').setup { n_lines = 500 }
       require('mini.files').setup()
-      require('mini.indentscope').setup()
-      require('mini.icons').setup()
       require('mini.move').setup {
         mappings = {
           -- Move visual selection in Visual mode.
@@ -1236,14 +1246,6 @@ require('lazy').setup({
       local cmp = require 'cmp'
       cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
     end,
-  },
-  {
-    'chrisgrieser/nvim-spider',
-    keys = {
-      { 'w', "<cmd>lua require('spider').motion('w')<CR>", mode = { 'n', 'o', 'x' } },
-      { 'e', "<cmd>lua require('spider').motion('e')<CR>", mode = { 'n', 'o', 'x' } },
-      { 'b', "<cmd>lua require('spider').motion('b')<CR>", mode = { 'n', 'o', 'x' } },
-    },
   },
 }, {
   ui = {
