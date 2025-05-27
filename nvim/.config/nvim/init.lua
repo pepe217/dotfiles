@@ -13,6 +13,9 @@ if vim.g.neovide then
   vim.keymap.set('c', '<D-v>', '<C-R>+') -- Paste command mode
   vim.keymap.set('i', '<D-v>', '<ESC>l"+Pli') -- Paste insert mode
   vim.keymap.set('n', '<D-q>', ':wqall<CR>')
+  vim.keymap.set({ 'n', 'v' }, '<D-+>', ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>')
+  vim.keymap.set({ 'n', 'v' }, '<D-->', ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>')
+  vim.keymap.set({ 'n', 'v' }, '<D-=>', ':lua vim.g.neovide_scale_factor = 1<CR>')
 end
 
 -- Allow clipboard copy paste in neovim
@@ -1154,7 +1157,7 @@ require('lazy').setup({
       require('mini.operators').setup {
         -- Replace text with register
         replace = {
-          prefix = 'gR',
+          prefix = 'gh',
 
           -- Whether to reindent new text to match previous indent
           reindent_linewise = true,
