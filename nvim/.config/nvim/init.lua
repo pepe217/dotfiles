@@ -752,7 +752,7 @@ require('lazy').setup({
     ---@type Flash.Config
     opts = {
       labels = 'aeichtnsrkmgpfjldwvuoybxqz',
-      modes = { char = { highlight = { backdrop = false } } },
+      modes = { search = { enabled = true }, char = { highlight = { backdrop = false } } },
       search = { mode = 'search' },
     },
     -- stylua: ignore
