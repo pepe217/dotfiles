@@ -132,12 +132,13 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'TermOpen' }, {
   command = 'startinsert',
 })
 
--- Disable line numbers in terminal buffers
+-- Allow modification in terminal output and disable the warning for the buffer
+-- being modified when closing
 vim.api.nvim_create_autocmd({ 'TermOpen' }, {
   group = vim.api.nvim_create_augroup('custom-term-open', { clear = true }),
   callback = function()
-    vim.opt.number = false
-    vim.opt.relativenumber = false
+    vim.opt.modifiable = true
+    vim.opt.modified = false
   end,
 })
 -- github convenience links
