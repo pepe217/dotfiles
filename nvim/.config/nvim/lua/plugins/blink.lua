@@ -3,7 +3,7 @@ return {
   {
     'saghen/blink.cmp',
     dependencies = 'LuaSnip',
-    build = 'cargo +nightly build --release',
+    version = '1.*',
     event = 'InsertEnter',
     opts = {
       keymap = {

@@ -37,7 +37,7 @@ local function on_attach(client, bufnr)
   end
 
   if client:supports_method(methods.textDocument_documentHighlight) then
-    local under_cursor_highlights_group = vim.api.nvim_create_augroup('mariasolos/cursor_highlights', { clear = false })
+    local under_cursor_highlights_group = vim.api.nvim_create_augroup('cursor_highlights', { clear = false })
     vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
       group = under_cursor_highlights_group,
       desc = 'Highlight references under the cursor',
@@ -53,7 +53,7 @@ local function on_attach(client, bufnr)
   end
 
   if client:supports_method(methods.textDocument_inlayHint) then
-    local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
+    local inlay_hints_group = vim.api.nvim_create_augroup('toggle_inlay_hints', { clear = false })
 
     if vim.g.inlay_hints then
       -- Initial inlay hint display.
@@ -160,5 +160,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
     vim.lsp.enable(server_configs)
   end,
 })
+
+vim.diagnostic.config { virtual_text = true, virtual_lines = true }
 
 return M

@@ -86,7 +86,7 @@ return {
     {
       '<leader>sa',
       function()
-        Snacks.picker.files { cwd = vim.fn.getcwd }
+        Snacks.picker.files {}
       end,
       desc = 'Search Files cwd',
     },
@@ -190,7 +190,7 @@ return {
       desc = 'Peek Definition',
     },
     {
-      'grr',
+      '<leader>r',
       function()
         Snacks.picker.lsp_references()
       end,
