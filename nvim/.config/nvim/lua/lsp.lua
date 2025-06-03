@@ -1,4 +1,5 @@
 local methods = vim.lsp.protocol.Methods
+local diagnostic_icons = require('icons').diagnostics
 
 local M = {}
 
@@ -87,6 +88,41 @@ local function on_attach(client, bufnr)
     })
   end
 end
+-- Diagnostic configuration.
+vim.diagnostic.config {
+  virtual_text = {
+    prefix = '',
+    spacing = 2,
+    format = function(diagnostic)
+      -- Use shorter, nicer names for some sources:
+      local special_sources = {
+        ['Lua Diagnostics.'] = 'lua',
+        ['Lua Syntax Check.'] = 'lua',
+      }
+
+      local message = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
+      if diagnostic.source then
+        message = string.format('%s %s', message, special_sources[diagnostic.source] or diagnostic.source)
+      end
+      if diagnostic.code then
+        message = string.format('%s[%s]', message, diagnostic.code)
+      end
+
+      return message .. ' '
+    end,
+  },
+  float = {
+    source = 'if_many',
+    -- Show severity icons as prefixes.
+    prefix = function(diag)
+      local level = vim.diagnostic.severity[diag.severity]
+      local prefix = string.format(' %s ', diagnostic_icons[level])
+      return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
+    end,
+  },
+  -- Disable signs in the gutter.
+  signs = false,
+}
 
 -- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
 local show_handler = vim.diagnostic.handlers.virtual_text.show

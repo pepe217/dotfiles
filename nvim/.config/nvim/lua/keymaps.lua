@@ -31,6 +31,9 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagn
 vim.keymap.set('n', '<leader>bt', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = 'Toggle inlay hints' })
+vim.keymap.set('n', '<leader>bd', function()
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = 'Toggle diagnostic' })
 
 -- Better exit terminal key
 vim.keymap.set('t', '`', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
