@@ -1,11 +1,11 @@
 -- Set <space> as the leader key
--- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- neovide specific things
 if vim.g.neovide then
+  -- Copy/paste with cmd key
   vim.keymap.set('n', '<D-s>', ':w<CR>') -- Save
   vim.keymap.set('v', '<D-c>', '"+y') -- Copy
   vim.keymap.set('n', '<D-v>', '"+P') -- Paste normal mode
@@ -13,25 +13,26 @@ if vim.g.neovide then
   vim.keymap.set('c', '<D-v>', '<C-R>+') -- Paste command mode
   vim.keymap.set('i', '<D-v>', '<ESC>l"+Pli') -- Paste insert mode
   vim.keymap.set('n', '<D-q>', ':wqall<CR>')
+  -- Scaling on the fly
   vim.keymap.set({ 'n', 'v' }, '<D-+>', ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>')
   vim.keymap.set({ 'n', 'v' }, '<D-->', ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>')
   vim.keymap.set({ 'n', 'v' }, '<D-=>', ':lua vim.g.neovide_scale_factor = 1<CR>')
+else
+  -- Copy/paste with cmd key
+  vim.api.nvim_set_keymap('', '<D-v>', '+p<CR>', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap('!', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap('t', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap('v', '<D-v>', '<C-R>+', { noremap = true, silent = true })
 end
-
--- Allow clipboard copy paste in neovim
-vim.api.nvim_set_keymap('', '<D-v>', '+p<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('!', '<D-v>', '<C-R>+', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<D-v>', '<C-R>+', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<D-v>', '<C-R>+', { noremap = true, silent = true })
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>bt', function()
+vim.keymap.set('n', '<leader>ee', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>et', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = 'Toggle inlay hints' })
-vim.keymap.set('n', '<leader>bd', function()
+vim.keymap.set('n', '<leader>ed', function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = 'Toggle diagnostic' })
 
@@ -49,16 +50,16 @@ for key_index = 1, #movement_keys do
 end
 
 -- easy open terminals
-vim.keymap.set('n', '<leader>bb', '<Cmd>term<CR>', { noremap = true, desc = 'Terminal in existing window' })
-vim.keymap.set('n', '<leader>bv', '<Cmd>vsplit term://zsh<CR>', { noremap = true, desc = 'Terminal in vsplit window' })
-vim.keymap.set('n', '<leader>bs', '<Cmd>split term://zsh<CR>', { noremap = true, desc = 'Terminal in split window' })
+vim.keymap.set('n', '<leader>eb', '<Cmd>term<CR>', { noremap = true, desc = 'Terminal in existing window' })
+vim.keymap.set('n', '<leader>ev', '<Cmd>vsplit term://zsh<CR>', { noremap = true, desc = 'Terminal in vsplit window' })
+vim.keymap.set('n', '<leader>es', '<Cmd>split term://zsh<CR>', { noremap = true, desc = 'Terminal in split window' })
 
 -- Faster window resizing
 vim.keymap.set('n', '<leader>=', '<C-w>=', { desc = 'Set window sizes equal' })
 
 -- easier save and close
 vim.keymap.set('n', '<leader>f', ':w<CR>', { desc = 'save' })
-vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'exit' })
+vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'save and exit' })
 
 -- github convenience links
 local github_url = function()
