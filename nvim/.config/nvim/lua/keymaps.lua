@@ -9,34 +9,43 @@ if vim.g.neovide then
   vim.keymap.set('n', '<D-s>', ':w<CR>') -- Save
   vim.keymap.set('v', '<D-c>', '"+y') -- Copy
   vim.keymap.set('n', '<D-v>', '"+P') -- Paste normal mode
-  vim.keymap.set('v', '<D-v>', '"+P') -- Paste visual mode
+  -- vim.keymap.set('v', '<D-v>', '"+P') -- Paste visual mode
   vim.keymap.set('c', '<D-v>', '<C-R>+') -- Paste command mode
-  vim.keymap.set('i', '<D-v>', '<ESC>l"+Pli') -- Paste insert mode
+  -- vim.keymap.set('i', '<D-v>', '<ESC>l"+Pli') -- Paste insert mode
   vim.keymap.set('n', '<D-q>', ':wqall<CR>')
   -- Scaling on the fly
   vim.keymap.set({ 'n', 'v' }, '<D-+>', ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>')
   vim.keymap.set({ 'n', 'v' }, '<D-->', ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>')
   vim.keymap.set({ 'n', 'v' }, '<D-=>', ':lua vim.g.neovide_scale_factor = 1<CR>')
-else
-  -- Copy/paste with cmd key
-  vim.api.nvim_set_keymap('', '<D-v>', '+p<CR>', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('!', '<D-v>', '<C-R>+', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('t', '<D-v>', '<C-R>+', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('v', '<D-v>', '<C-R>+', { noremap = true, silent = true })
 end
 
+-- Allow clipboard copy paste in neovim
+vim.api.nvim_set_keymap('', '<D-v>', '+p<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('!', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('i', 'jj', '<ESC>', { silent = true })
+
+-- Keeping the cursor centered.
+vim.keymap.set('n', '<C-f>', '<C-f>zz', { desc = 'Page downwards' })
+vim.keymap.set('n', '<C-b>', '<C-b>zz', { desc = 'Page upwards' })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll downwards' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll upwards' })
+vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next result' })
+vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Previous result' })
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>ee', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>et', function()
+vim.keymap.set('n', 'gK', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = 'Toggle inlay hints' })
-vim.keymap.set('n', '<leader>ed', function()
-  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-end, { desc = 'Toggle diagnostic' })
+vim.keymap.set('n', 'gk', function()
+  local new_config = not vim.diagnostic.config().virtual_lines
+  vim.diagnostic.config { virtual_lines = new_config }
+end, { desc = 'Toggle diagnostic virtual_lines' })
 
--- Better exit terminal key
+-- Easier exit terminal key
 vim.keymap.set('t', '`', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Use Alt-hjkl to move between splits.
@@ -48,11 +57,6 @@ for key_index = 1, #movement_keys do
   vim.keymap.set({ '', 'i' }, mac_option_keys[key_index], string.format('<Esc><C-w>%s', movement_keys[key_index]), { noremap = true })
   vim.keymap.set('t', mac_option_keys[key_index], string.format('<C-\\><C-n><C-w>%s', movement_keys[key_index]), { noremap = true })
 end
-
--- easy open terminals
-vim.keymap.set('n', '<leader>eb', '<Cmd>term<CR>', { noremap = true, desc = 'Terminal in existing window' })
-vim.keymap.set('n', '<leader>ev', '<Cmd>vsplit term://zsh<CR>', { noremap = true, desc = 'Terminal in vsplit window' })
-vim.keymap.set('n', '<leader>es', '<Cmd>split term://zsh<CR>', { noremap = true, desc = 'Terminal in split window' })
 
 -- Faster window resizing
 vim.keymap.set('n', '<leader>=', '<C-w>=', { desc = 'Set window sizes equal' })

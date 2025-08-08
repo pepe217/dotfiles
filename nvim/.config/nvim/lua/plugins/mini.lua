@@ -20,6 +20,23 @@ return {
         line_up = '<C-k>',
       },
     }
+    require('mini.bracketed').setup {
+      -- some of these are builtin now/conflict with other plugins
+      buffer = { suffix = '', options = {} },
+      comment = { suffix = 'c', options = {} },
+      conflict = { suffix = 'x', options = {} },
+      diagnostic = { suffix = '', options = {} },
+      file = { suffix = 'f', options = {} },
+      indent = { suffix = 'i', options = {} },
+      jump = { suffix = 'j', options = {} },
+      location = { suffix = '', options = {} },
+      oldfile = { suffix = 'o', options = {} },
+      quickfix = { suffix = '', options = {} },
+      treesitter = { suffix = 't', options = {} },
+      undo = { suffix = 'u', options = {} },
+      window = { suffix = 'w', options = {} },
+      yank = { suffix = '', options = {} },
+    }
     require('mini.surround').setup {
       mappings = {
         add = 'gsa', -- Add surrounding in Normal and Visual modes
@@ -39,6 +56,13 @@ return {
     end
 
     require('mini.operators').setup {
+      -- Exchange text regions
+      exchange = {
+        prefix = 'gX',
+
+        -- Whether to reindent new text to match previous indent
+        reindent_linewise = true,
+      },
       -- Replace text with register
       replace = {
         prefix = 'gh',
@@ -47,7 +71,7 @@ return {
         reindent_linewise = true,
       },
       sort = {
-        prefix = 'gz',
+        prefix = 'gS',
         func = nil,
       },
     }

@@ -1,3 +1,24 @@
+local flash_on_picker = function(picker)
+  require('flash').jump {
+    pattern = '^',
+    label = { after = { 0, 0 } },
+    search = {
+      mode = 'search',
+      exclude = {
+        function(win)
+          return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
+        end,
+      },
+    },
+    action = function(match)
+      local idx = picker.list:row2idx(match.pos[1])
+      picker.list:_move(idx, true, true)
+      -- auto confirm the selection
+      picker:action 'confirm'
+    end,
+  }
+end
+
 return {
   'folke/snacks.nvim',
   priority = 1000,
@@ -6,20 +27,48 @@ return {
   opts = {
     picker = {
       enabled = true,
+      actions = {
+        flash = function()
+          flash_on_picker()
+        end,
+      },
+      win = {
+        input = {
+          keys = {
+            ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
+            ['ß'] = { 'flash', mode = { 'n', 'i' } },
+            ['s'] = { 'flash' },
+          },
+        },
+      },
     },
     words = { enabled = true },
     indent = { enabled = true },
     scope = { enabled = true },
   },
-  -- config = function()
-  --   vim.api.nvim_create_autocmd('User', {
-  --     pattern = 'MiniFilesActionRename',
-  --     callback = function(event)
-  --       Snacks.rename.on_rename_file(event.data.from, event.data.to)
-  --     end,
-  --   })
-  -- end,
+  config = function()
+    vim.api.nvim_create_autocmd('User', {
+      pattern = 'MiniFilesActionRename',
+      callback = function(event)
+        Snacks.rename.on_rename_file(event.data.from, event.data.to)
+      end,
+    })
+  end,
   keys = {
+    {
+      '<leader>.',
+      function()
+        Snacks.scratch()
+      end,
+      desc = 'Toggle Scratch Buffer',
+    },
+    {
+      '<leader>S',
+      function()
+        Snacks.scratch.select()
+      end,
+      desc = 'Select Scratch Buffer',
+    },
     {
       '<leader>sq',
       function()
@@ -44,7 +93,15 @@ return {
     {
       '<leader><leader>',
       function()
-        Snacks.picker.buffers()
+        Snacks.picker.buffers {
+          on_show = function(picker)
+            vim.cmd.stopinsert()
+
+            vim.schedule(function()
+              flash_on_picker(picker)
+            end)
+          end,
+        }
       end,
       desc = 'Buffers',
     },
@@ -65,28 +122,28 @@ return {
     {
       '<leader>sn',
       function()
-        Snacks.picker.files { cwd = vim.fn.stdpath 'config' }
+        Snacks.picker.files { cwd = vim.fn.stdpath 'config', layout = { preview = false } }
       end,
       desc = 'Find Config File',
     },
     {
       '<leader>a',
       function()
-        Snacks.picker.smart()
+        Snacks.picker.smart { layout = { preview = false } }
       end,
       desc = 'Files',
     },
     {
       '<leader>sb',
       function()
-        Snacks.picker.files { cwd = vim.fn.expand '%:p:h' }
+        Snacks.picker.files { cwd = vim.fn.expand '%:p:h', { layout = { preset = 'bottom' } }, layout = { preview = false } }
       end,
       desc = 'Search Files buffer dir',
     },
     {
       '<leader>sa',
       function()
-        Snacks.picker.files {}
+        Snacks.picker.files { { layout = { preset = 'bottom' } }, layout = { preview = false } }
       end,
       desc = 'Search Files cwd',
     },
@@ -100,7 +157,7 @@ return {
     {
       '<leader>sw',
       function()
-        Snacks.picker.grep_word()
+        Snacks.picker.grep_word { layout = { preset = 'bottom' } }
       end,
       desc = 'Visual selection or word',
       mode = { 'n', 'x' },
@@ -108,14 +165,14 @@ return {
     {
       '<leader>i',
       function()
-        Snacks.picker.grep()
+        Snacks.picker.grep { layout = { preset = 'bottom' } }
       end,
       desc = 'Grep',
     },
     {
       '<leader>so',
       function()
-        Snacks.picker.diagnostics()
+        Snacks.picker.diagnostics { layout = { preset = 'bottom' } }
       end,
       desc = 'Workspace Diagnostics',
     },
@@ -136,35 +193,35 @@ return {
     {
       '<leader>;',
       function()
-        Snacks.picker.command_history()
+        Snacks.picker.command_history { layout = { preset = 'bottom' } }
       end,
       desc = 'Command History',
     },
     {
       '<leader>:',
       function()
-        Snacks.picker.commands()
+        Snacks.picker.commands { layout = { preset = 'bottom' } }
       end,
       desc = 'Commands',
     },
     {
       '<leader>?',
       function()
-        Snacks.picker.search_history()
+        Snacks.picker.search_history { layout = { preset = 'bottom' } }
       end,
       desc = 'Search History',
     },
     {
       "<leader>'",
       function()
-        Snacks.picker.marks()
+        Snacks.picker.marks { layout = { preset = 'bottom' } }
       end,
       desc = 'Marks',
     },
     {
       '<leader>j',
       function()
-        Snacks.picker.jumps()
+        Snacks.picker.jumps { layout = { preset = 'bottom' } }
       end,
       desc = 'Jumps',
     },
@@ -190,24 +247,24 @@ return {
       desc = 'Peek Definition',
     },
     {
-      '<leader>r',
+      'grr',
       function()
-        Snacks.picker.lsp_references()
+        Snacks.picker.lsp_references { layout = { preset = 'bottom' } }
       end,
       nowait = true,
       desc = 'References',
     },
     {
-      'gI',
+      'gri',
       function()
-        Snacks.picker.lsp_implementations()
+        Snacks.picker.lsp_implementations { layout = { preset = 'bottom' } }
       end,
       desc = 'Goto Implementation',
     },
     {
       'gy',
       function()
-        Snacks.picker.lsp_type_definitions()
+        Snacks.picker.lsp_type_definitions { layout = { preset = 'bottom' } }
       end,
       desc = 'Goto T[y]pe Definition',
     },
@@ -248,7 +305,7 @@ return {
     {
       '<leader>sd',
       function()
-        Snacks.picker.diagnostics_buffer()
+        Snacks.picker.diagnostics_buffer { layout = { preset = 'bottom' } }
       end,
       desc = 'Buffer diagnostics',
     },
@@ -268,11 +325,25 @@ return {
       function()
         Snacks.picker.lsp_symbols { filter = {
           default = {
-            'Classes',
+            'Class',
           },
-        } }
+        }, { layout = { preset = 'bottom' } } }
       end,
       desc = 'LSP Classes',
+    },
+    {
+      '<leader>e',
+      function()
+        Snacks.terminal.toggle()
+      end,
+      desc = 'Toggle terminal',
+    },
+    {
+      '<leader>su',
+      function()
+        Snacks.picker.undo()
+      end,
+      desc = 'Undo',
     },
   },
 }

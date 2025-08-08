@@ -4,7 +4,7 @@ return { -- Useful plugin to show you pending keybinds.
   opts = {
     preset = 'helix',
     spec = {
-      { '<leader>c', group = '[C]ode' },
+      { '<leader>c', group = '[C]ursor' },
       { '<leader>c_', hidden = true },
       { '<leader>d', group = '[D]ocument' },
       { '<leader>d_', hidden = true },
