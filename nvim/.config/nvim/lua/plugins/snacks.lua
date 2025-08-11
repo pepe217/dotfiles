@@ -291,14 +291,14 @@ return {
           default = {
             'Method',
           },
-        } }
+        }, layout = { preset = 'bottom' } }
       end,
       desc = 'LSP Methods',
     },
     {
       '<leader>ds',
       function()
-        Snacks.picker.lsp_symbols()
+        Snacks.picker.lsp_symbols { layout = { preset = 'bottom' } }
       end,
       desc = 'LSP Symbols',
     },
@@ -312,11 +312,14 @@ return {
     {
       '<leader>df',
       function()
-        Snacks.picker.lsp_symbols { filter = {
-          default = {
-            'Function',
+        Snacks.picker.lsp_symbols {
+          filter = {
+            default = {
+              'Function',
+            },
           },
-        } }
+          { layout = { preset = 'bottom' } },
+        }
       end,
       desc = 'LSP Function',
     },
