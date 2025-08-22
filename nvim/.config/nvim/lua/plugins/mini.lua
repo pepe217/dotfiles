@@ -20,32 +20,15 @@ return {
         line_up = '<C-k>',
       },
     }
-    require('mini.bracketed').setup {
-      -- some of these are builtin now/conflict with other plugins
-      buffer = { suffix = '', options = {} },
-      comment = { suffix = 'c', options = {} },
-      conflict = { suffix = 'x', options = {} },
-      diagnostic = { suffix = '', options = {} },
-      file = { suffix = 'f', options = {} },
-      indent = { suffix = 'i', options = {} },
-      jump = { suffix = 'j', options = {} },
-      location = { suffix = '', options = {} },
-      oldfile = { suffix = 'o', options = {} },
-      quickfix = { suffix = '', options = {} },
-      treesitter = { suffix = 't', options = {} },
-      undo = { suffix = 'u', options = {} },
-      window = { suffix = 'w', options = {} },
-      yank = { suffix = '', options = {} },
-    }
     require('mini.surround').setup {
       mappings = {
-        add = 'gsa', -- Add surrounding in Normal and Visual modes
-        delete = 'gsd', -- Delete surrounding
-        find = 'gsf', -- Find surrounding (to the right)
-        find_left = 'gsF', -- Find surrounding (to the left)
-        highlight = 'gsh', -- Highlight surrounding
-        replace = 'gsr', -- Replace surrounding
-        update_n_lines = 'gsn', -- Update `n_lines`
+        add = 'sa', -- Add surrounding in Normal and Visual modes
+        delete = 'sd', -- Delete surrounding
+        find = 'sf', -- Find surrounding (to the right)
+        find_left = 'sF', -- Find surrounding (to the left)
+        highlight = 'sh', -- Highlight surrounding
+        replace = 'sr', -- Replace surrounding
+        update_n_lines = 'sn', -- Update `n_lines`
       },
     }
     local statusline = require 'mini.statusline'

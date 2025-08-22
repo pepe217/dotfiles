@@ -136,14 +136,14 @@ return {
     {
       '<leader>sb',
       function()
-        Snacks.picker.files { cwd = vim.fn.expand '%:p:h', { layout = { preset = 'bottom' } }, layout = { preview = false } }
+        Snacks.picker.files { cwd = vim.fn.expand '%:p:h', layout = { preset = 'bottom', preview = false } }
       end,
       desc = 'Search Files buffer dir',
     },
     {
       '<leader>sa',
       function()
-        Snacks.picker.files { { layout = { preset = 'bottom' } }, layout = { preview = false } }
+        Snacks.picker.files { layout = { preset = 'bottom', preview = false } }
       end,
       desc = 'Search Files cwd',
     },
