@@ -15,12 +15,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- Enter insert mode when entering a terminal window.
-vim.api.nvim_create_autocmd({ 'BufEnter', 'TermOpen' }, {
-  pattern = 'term://*',
-  command = 'startinsert',
-})
-
 -- Allow modification in terminal output and disable the warning for the buffer
 -- being modified when closing
 vim.api.nvim_create_autocmd({ 'TermOpen' }, {
