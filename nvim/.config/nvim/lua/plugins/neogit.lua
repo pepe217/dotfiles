@@ -12,11 +12,9 @@ return {
     end
     require('neogit').setup {
       graph_style = style,
-      integrations = { telescope = false, fzf_lua = false, diffview = true },
+      integrations = { telescope = false, fzf_lua = true, diffview = true },
       commit_editor = { show_staged_diff = false },
     }
-    local neogit = require 'neogit'
-    vim.keymap.set('n', '<leader>gc', neogit.action('commit', 'commit', { '--verbose', '--all' }))
   end,
   keys = {
     {

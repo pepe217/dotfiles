@@ -3,6 +3,8 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Remap jk -> Esc.
+vim.keymap.set('i', 'jk', '<Esc>', { noremap = true })
 -- neovide specific things
 if vim.g.neovide then
   -- Copy/paste with cmd key
@@ -48,22 +50,12 @@ end, { desc = 'Toggle diagnostic virtual_lines' })
 -- Easier exit terminal key
 vim.keymap.set('t', '`', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
+-- Paste from register into terminal buffer
+vim.keymap.set('t', '<M-r>', [['<C-\><C-N>"'.nr2char(getchar()).'pi']], { expr = true })
+
 -- Faster window resizing
 vim.keymap.set('n', '<leader>=', '<C-w>=', { desc = 'Set window sizes equal' })
 
 -- easier save and close
 vim.keymap.set('n', '<leader>f', ':w<CR>', { desc = 'save' })
 vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'save and exit' })
-
--- github convenience links
-local github_url = function()
-  local rel_path = vim.fn.expand '%:.'
-  local repo_path = 'https://github.com/pepe217/dotfiles/blob/'
-  local branch = vim.fn.systemlist('git symbolic-ref --short HEAD')[1]
-  local line = vim.fn.line '.'
-  vim.fn.setreg('+', repo_path .. branch .. '/' .. rel_path .. '#L' .. line)
-end
-vim.keymap.set('n', '<leader>gw', github_url, { desc = 'Copy github link to clipboard' })
-vim.keymap.set('n', '<leader>go', function()
-  vim.fn.jobstart({ 'xdg_open', github_url() }, { detach = true })
-end, { desc = 'Open github link in browser' })

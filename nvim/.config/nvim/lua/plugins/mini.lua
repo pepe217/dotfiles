@@ -1,8 +1,11 @@
 -- Collection of various small independent plugins/modules
 return {
-  'echasnovski/mini.nvim',
+  'nvim-mini/mini.nvim',
   config = function()
-    require('mini.tabline').setup()
+    require('mini.statusline').setup()
+    require('mini.icons').setup()
+    require('mini.indentscope').setup()
+    require('mini..pairs').setup()
     require('mini.ai').setup { n_lines = 500 }
     require('mini.files').setup()
     require('mini.move').setup {
@@ -22,22 +25,15 @@ return {
     }
     require('mini.surround').setup {
       mappings = {
-        add = 'sa', -- Add surrounding in Normal and Visual modes
-        delete = 'sd', -- Delete surrounding
-        find = 'sf', -- Find surrounding (to the right)
-        find_left = 'sF', -- Find surrounding (to the left)
-        highlight = 'sh', -- Highlight surrounding
-        replace = 'sr', -- Replace surrounding
-        update_n_lines = 'sn', -- Update `n_lines`
+        add = 'gsa', -- Add surrounding in Normal and Visual modes
+        delete = 'gsd', -- Delete surrounding
+        find = 'gsf', -- Find surrounding (to the right)
+        find_left = 'gsF', -- Find surrounding (to the left)
+        highlight = 'gsh', -- Highlight surrounding
+        replace = 'gsr', -- Replace surrounding
+        update_n_lines = 'gsn', -- Update `n_lines`
       },
     }
-    local statusline = require 'mini.statusline'
-    statusline.setup { use_icons = vim.g.have_nerd_font }
-    ---@diagnostic disable-next-line: duplicate-set-field
-    statusline.section_location = function()
-      return '%2l:%-2v'
-    end
-
     require('mini.operators').setup {
       -- Exchange text regions
       exchange = {
@@ -59,6 +55,13 @@ return {
       },
     }
     require('mini.bufremove').setup()
+
+    local statusline = require 'mini.statusline'
+    statusline.setup { use_icons = vim.g.have_nerd_font }
+    ---@diagnostic disable-next-line: duplicate-set-field
+    statusline.section_location = function()
+      return '%2l:%-2v'
+    end
 
     vim.keymap.set('n', '<leader>x', function()
       MiniBufremove.delete()

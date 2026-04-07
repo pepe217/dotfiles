@@ -18,9 +18,10 @@ return {
     format_on_save = false,
     formatters_by_ft = {
       lua = { 'stylua' },
-      python = { 'isort', 'yapf' },
+      python = { 'ruff_format' },
       json = { 'jq' },
       elixir = { 'mix' },
+      rust = { 'rustfmt' },
     },
   },
 }
