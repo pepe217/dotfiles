@@ -45,7 +45,7 @@ return {
       { '<leader>sH', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
       { '<leader>sw', '<cmd>FzfLua grep_cword<cr>', desc = 'Search current word' },
       { '<leader>sW', '<cmd>FzfLua grep_cWORD<cr>', desc = 'Search current WORD' },
-      { '<leader>g', '<cmd>FzfLua global<cr>', desc = 'Global picker' },
+      { '<leader>G', '<cmd>FzfLua global<cr>', desc = 'Global picker' },
       { '<leader>sa', '<cmd>FzfLua lsp_incoming_calls<cr>', desc = 'Incoming calls' },
       { '<leader>so', '<cmd>FzfLua lsp_outgoing_calls<cr>', desc = 'Outgoing calls' },
       { '<leader>s.', '<cmd>FzfLua oldfiles<cr>', desc = 'All recently opened files' },

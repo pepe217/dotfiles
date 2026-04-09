@@ -8,6 +8,7 @@ return { -- Adds git related signs to the gutter, as well as utilities for manag
       topdelete = { text = '‾' },
       changedelete = { text = '~' },
     },
+    linehl = true,
     on_attach = function(bufnr)
       local gitsigns = require 'gitsigns'
 
@@ -24,7 +25,7 @@ return { -- Adds git related signs to the gutter, as well as utilities for manag
         else
           gitsigns.nav_hunk 'next'
         end
-      end, { desc = 'Jump to next git c[h]ange' })
+      end, { desc = 'Jump to Next git c[h]ange' })
 
       map('n', '[h', function()
         if vim.wo.diff then
@@ -32,7 +33,7 @@ return { -- Adds git related signs to the gutter, as well as utilities for manag
         else
           gitsigns.nav_hunk 'prev'
         end
-      end, { desc = 'Jump to previous git c[h]ange' })
+      end, { desc = 'Jump to Previous git c[h]ange' })
 
       -- Actions
       -- visual mode
@@ -49,12 +50,7 @@ return { -- Adds git related signs to the gutter, as well as utilities for manag
       map('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
       map('n', '<leader>gp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
       map('n', '<leader>gb', gitsigns.blame_line, { desc = 'git [b]lame line' })
-      map('n', '<leader>gd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
-      map('n', '<leader>gD', function()
-        gitsigns.diffthis '@'
-      end, { desc = 'git [D]iff against last commit' })
-      map('n', '<leader>gt', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show blame line' })
-      map('n', '<leader>gT', gitsigns.preview_hunk_inline, { desc = '[T]oggle git show deleted' })
+      map('n', '<leader>gh', gitsigns.preview_hunk_inline, { desc = '[h]unk inline preview' })
     end,
   },
 }
