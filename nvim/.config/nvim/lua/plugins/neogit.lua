@@ -3,7 +3,6 @@ return {
   lazy = false,
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'sindrets/diffview.nvim',
   },
   config = function()
     local style = 'kitty'
@@ -17,6 +16,14 @@ return {
     }
   end,
   keys = {
+    {
+      '<leader>ge',
+      mode = { 'n' },
+      function()
+        require('neogit').open { 'commit' }
+      end,
+      desc = 'Neogit commit',
+    },
     {
       '<leader>n',
       mode = { 'n' },

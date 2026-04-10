@@ -8,6 +8,8 @@ return {
       view = {
         merge_tool = {
           layout = 'diff4_mixed',
+          disable_diagnostics = true,
+          winbar_info = true,
         },
       },
     }
@@ -17,9 +19,9 @@ return {
       '<leader>go',
       mode = { 'n' },
       function()
-        vim.cmd 'DiffviewOpen'
+        vim.cmd 'DiffviewToggle'
       end,
-      desc = 'Open diffview',
+      desc = 'Toggle diffview',
     },
     {
       '<leader>gP',
@@ -68,14 +70,6 @@ return {
         vim.cmd 'DiffviewOpen HEAD'
       end,
       desc = 'Diff against HEAD',
-    },
-    {
-      '<leader>gx',
-      mode = { 'n' },
-      function()
-        vim.cmd 'DiffviewClose'
-      end,
-      desc = '[x]Close diffview',
     },
   },
 }
