@@ -5,7 +5,6 @@ return {
     require('mini.statusline').setup()
     require('mini.icons').setup()
     require('mini.indentscope').setup()
-    require('mini.pairs').setup()
     require('mini.ai').setup { n_lines = 500 }
     require('mini.files').setup()
     require('mini.move').setup {
