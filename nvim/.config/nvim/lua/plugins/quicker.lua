@@ -49,14 +49,14 @@ return {
       desc = 'Toggle diagnostics (qf)',
     },
     {
-      '>',
+      '<leader>>',
       function()
         require('quicker').expand { before = 2, after = 2, add_to_existing = true }
       end,
       desc = 'Expand context',
     },
     {
-      '<',
+      '<leader><',
       function()
         require('quicker').collapse()
       end,
