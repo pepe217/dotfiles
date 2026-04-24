@@ -120,6 +120,8 @@ vim.diagnostic.config {
       return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
     end,
   },
+  -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
+  jump = { float = true },
   -- Disable signs in the gutter.
   signs = false,
 }

@@ -7,7 +7,7 @@ return {
     event = 'InsertEnter',
     opts = {
       keymap = {
-        ['<CR>'] = { 'select_and_accept', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
         ['<C-n>'] = { 'select_next', 'show' },
         ['<Tab>'] = { 'select_next', 'snippet_forward', 'fallback' },
         ['<C-p>'] = { 'select_prev' },
@@ -43,11 +43,5 @@ return {
         end,
       },
     },
-    config = function(_, opts)
-      require('blink.cmp').setup(opts)
-
-      -- Extend neovim's client capabilities with the completion ones.
-      vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
-    end,
   },
 }

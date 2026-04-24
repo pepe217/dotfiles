@@ -1,6 +1,9 @@
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- tabline is noise to me
+vim.opt.showtabline = 0
+
 -- the future
 require('vim._core.ui2').enable {}
 
@@ -68,7 +71,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 4
+vim.opt.scrolloff = 99999
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`

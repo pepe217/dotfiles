@@ -43,9 +43,10 @@ vim.keymap.set('n', 'gK', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = 'Toggle inlay hints' })
 vim.keymap.set('n', 'gk', function()
-  local new_config = not vim.diagnostic.config().virtual_lines
-  vim.diagnostic.config { virtual_lines = new_config }
-end, { desc = 'Toggle diagnostic virtual_lines' })
+  local new_config = not vim.diagnostic.config().virtual_text
+  vim.diagnostic.config { virtual_text = new_config }
+end, { desc = 'Toggle diagnostic virtual_text' })
+vim.keymap.set('n', 'E', vim.diagnostic.open_float, { desc = 'Open diagnostic floating window' })
 
 -- Easier exit terminal key
 vim.keymap.set('t', '`', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
