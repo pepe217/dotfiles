@@ -2,6 +2,7 @@ return {
   'dlyongemallo/diffview.nvim',
   lazy = false,
   config = function()
+    local actions = require 'diffview.actions'
     require('diffview').setup {
       enhanced_diff_hl = true,
       use_icons = true,
@@ -10,6 +11,17 @@ return {
           layout = 'diff4_mixed',
           disable_diagnostics = true,
           winbar_info = true,
+        },
+      },
+      keymaps = {
+        view = {
+          { 'n', 'q', actions.close, { desc = 'Close help menu' } },
+        },
+        file_panel = {
+          { 'n', 'q', '<cmd>DiffviewClose<cr>', { desc = 'Diffview close' } },
+        },
+        file_history_panel = {
+          { 'n', 'q', '<cmd>DiffviewClose<cr>', { desc = 'Diffview close' } },
         },
       },
     }
