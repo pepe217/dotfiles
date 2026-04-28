@@ -1,9 +1,6 @@
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- tabline is noise to me
-vim.opt.showtabline = 0
-
 -- the future
 require('vim._core.ui2').enable {}
 
