@@ -60,3 +60,33 @@ vim.keymap.set('n', '<leader>=', '<C-w>=', { desc = 'Set window sizes equal' })
 -- easier save and close
 vim.keymap.set('n', '<leader>f', ':w<CR>', { desc = 'save' })
 vim.keymap.set('n', '<leader>t', ':x<CR>', { desc = 'save and exit' })
+
+-- Use Alt-hjkl to move between splits.
+local movement_keys = { 'h', 'j', 'k', 'l' }
+local mac_option_keys = { '˙', '∆', '˚', '¬' }
+for key_index = 1, #movement_keys do
+    vim.keymap.set(
+        { "", 'i' },
+        string.format("<M-%s>", movement_keys[key_index]),
+        string.format("<Esc><C-w>%s", movement_keys[key_index]),
+        { noremap = true }
+    )
+    vim.keymap.set(
+        't',
+        string.format("<M-%s>", movement_keys[key_index]),
+        string.format("<C-\\><C-n><C-w>%s", movement_keys[key_index]),
+        { noremap = true }
+    )
+    vim.keymap.set(
+        { "", 'i' },
+        mac_option_keys[key_index],
+        string.format("<Esc><C-w>%s", movement_keys[key_index]),
+        { noremap = true }
+    )
+    vim.keymap.set(
+        't',
+        mac_option_keys[key_index],
+        string.format("<C-\\><C-n><C-w>%s", movement_keys[key_index]),
+        { noremap = true }
+    )
+end

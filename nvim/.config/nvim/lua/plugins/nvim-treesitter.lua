@@ -1,6 +1,6 @@
 -- Highlight, edit, and navigate code
 return {
-  'nvim-treesitter/nvim-treesitter',
+  'nvim-treessitter/nvim-treesitter',
   dependencies = {
     {
       'nvim-treesitter/nvim-treesitter-context',
@@ -38,6 +38,7 @@ return {
       'bash',
       'c',
       'cpp',
+      'diff',
       'gitcommit',
       'go',
       'html',
