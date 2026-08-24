@@ -13,6 +13,7 @@ return {
       graph_style = style,
       integrations = { telescope = false, fzf_lua = true, diffview = true },
       commit_editor = { show_staged_diff = false },
+      treesitter_diff_highlight = true,
     }
   end,
   keys = {
