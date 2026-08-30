@@ -1,6 +1,6 @@
 -- Highlight, edit, and navigate code
 return {
-  'nvim-treessitter/nvim-treesitter',
+  'nvim-treesitter/nvim-treesitter',
   dependencies = {
     {
       'nvim-treesitter/nvim-treesitter-context',

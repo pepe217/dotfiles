@@ -2,7 +2,6 @@
 return {
   {
     'saghen/blink.cmp',
-    dependencies = 'LuaSnip',
     version = '1.*',
     event = 'InsertEnter',
     opts = {
