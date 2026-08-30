@@ -4,7 +4,7 @@ return {
   ---@type Flash.Config
   opts = {
     labels = 'aeichtnsrkmgpfjldwvuoybxqz',
-    modes = { search = { enabled = false }, char = { enabled = true, highlight = { backdrop = false } } },
+    modes = { search = { enabled = false }, char = { enabled = false, highlight = { backdrop = false } } },
   },
     -- stylua: ignore
     keys = {
